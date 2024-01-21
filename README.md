@@ -1,4 +1,4 @@
-# Panic Attack Resolver
+# Habit Healer
 
 ## Authors
 
