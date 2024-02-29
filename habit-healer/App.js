@@ -12,6 +12,7 @@ import Settings from './components/Settings'
 import Main from './components/Main'
 import Friends from './components/Friends';
 import HabitOverview from './components/HabitOverview';
+import Calendar from './components/Calendar';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Login');
@@ -27,6 +28,8 @@ export default function App() {
         return <Friends />
       case 'HabitOverview':
         return <HabitOverview />
+      case 'Calendar':
+        return <Calendar />
       case 'Settings':
         return <Settings setCurrentScreen={setCurrentScreen} />
       default:
