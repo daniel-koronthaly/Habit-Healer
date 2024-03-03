@@ -51,6 +51,7 @@ const Main = () => {
         timeOfDay = "Evening"
         emoji = '🌙';
     }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.greetingContainer}>
@@ -107,7 +108,8 @@ const Main = () => {
 }
 const styles = StyleSheet.create({
     greetingContainer: {
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        marginVertical: 20
     },
     greeting: {
         fontSize: 24,

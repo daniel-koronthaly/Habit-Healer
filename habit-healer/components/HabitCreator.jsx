@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+    Alert,
     TouchableOpacity,
     ActivityIndicator,
     Text,
@@ -14,23 +15,25 @@ import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebase
 import { colors } from '../colors/colors';
 import Autocomplete from 'react-native-autocomplete-input';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import DaySelector from './DaySelector';
 import SubpageHeader from './SubpageHeader';
+import { weekdays } from 'moment';
 const auth = getAuth();
 
 const HabitCreator = () => {
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [categories, setCategories] = useState([]);
-    const [query, setQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [category, setCategory] = useState('');
     const [isFocused, setIsFocused] = useState(false)
 
     const [habitName, setHabitName] = useState('')
 
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+    const [selectedTime, setSelectedTime] = useState(null);
 
     const [shareWithFriends, setShareWithFriends] = useState(false)
     const toggleSwitch = () => setShareWithFriends(previousState => !previousState);
+    const [weekdays, setWeekdays] = React.useState([])
 
     const uid = auth.currentUser.uid;
 
@@ -39,10 +42,11 @@ const HabitCreator = () => {
         const dbRef = ref(getDatabase());
 
 
-        get(child(dbRef, "users/" + auth.currentUser.uid + "/habits"))
+        get(child(dbRef, "habits/" + auth.currentUser.uid))
             .then(snapshot => {
-                if (snapshot.exists()) {
-                    const categories = Object.keys(snapshot.val());
+                const data = snapshot.val()
+                if (data && Object.keys(data).length > 0) {
+                    const categories = Object.keys(data);
                     setCategories(categories);
                     setLoadingCategories(false);
                 }
@@ -66,27 +70,84 @@ const HabitCreator = () => {
     };
 
     const handleSelectCategory = (category) => {
-        setSelectedCategory(category);
-        setQuery(category);
+        setCategory(category);
         setIsFocused(false);
         Keyboard.dismiss()
     };
 
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
+    const showTimePicker = () => {
+        setTimePickerVisibility(true);
     };
 
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
+    const hideTimePicker = () => {
+        setTimePickerVisibility(false);
     };
 
-    const handleDateConfirm = (date) => {
-        setSelectedDate(date);
-        hideDatePicker();
+    const handleTimeConfirm = (time) => {
+        setSelectedTime(time);
+        hideTimePicker();
     };
 
     function cancel() {
         // set screen to habit overview
+    }
+
+    function checkSavable() {
+        let savable = true;
+        let errorMessage = '';
+        if (category === '') {
+            savable = false;
+            errorMessage += "You must give a category for this habit.\n"
+        }
+        if (habitName === '') {
+            savable = false;
+            errorMessage += "You must choose a name for this habit.\n"
+        }
+        if (selectedTime === null) {
+            savable = false;
+            errorMessage += "You must choose a time.\n"
+        }
+        if (!weekdays.length) {
+            savable = false;
+            errorMessage += "You must choose at least one day.\n"
+        }
+        errorMessage = errorMessage.trimEnd();
+        if (!savable) {
+            Alert.alert(
+                "Error adding habit",
+                errorMessage,
+                [
+                    {
+                        text: "OK",
+                    },
+                ]
+            );
+        }
+        return savable;
+    }
+
+    async function saveHabit() {
+        if (checkSavable()) {
+            setWeekdays(weekdays.sort())
+            const dbRef = getDatabase();
+            const habit = {
+                "notificationTime": selectedTime,
+                "weekdays": weekdays,
+                "sharesWithFriends": shareWithFriends
+            }
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + category), habit).then(() => {
+                Alert.alert(
+                    "Added new habit",
+                    [
+                        {
+                            text: "OK",
+                        },
+                    ]
+                );
+            }).catch((error) => {
+                console.log("Failed to write habit to database " + error);
+            });
+        }
     }
 
     return (
@@ -121,7 +182,7 @@ const HabitCreator = () => {
                                 <View style={styles.containerCenter}>
                                     <View style={styles.autocompleteContainer}>
                                         <Autocomplete
-                                            data={findCategory(query)}
+                                            data={findCategory(category)}
                                             flatListProps={{
                                                 keyboardShouldPersistTaps: 'handled',
                                                 keyExtractor: (_, idx) => idx.toString(),
@@ -137,14 +198,14 @@ const HabitCreator = () => {
                                             listContainerStyle={styles.listContainer}
                                             renderTextInput={() => (
                                                 <TextInput
-                                                    defaultValue={query}
+                                                    defaultValue={category}
                                                     style={styles.input}
                                                     placeholder="Select a category"
                                                     onFocus={() => setIsFocused(true)}
                                                     onBlur={() => setIsFocused(false)}
                                                     onTextInput={() => setIsFocused(true)}
-                                                    onChangeText={(text) => setQuery(text)}
-                                                    value={query}
+                                                    onChangeText={(text) => setCategory(text)}
+                                                    value={category}
                                                 />
                                             )}
                                         />
@@ -165,18 +226,18 @@ const HabitCreator = () => {
                             <View style={styles.textInputPair}>
                                 <Text style={styles.labelText}>Set Time</Text>
                                 <View style={styles.containerCenter}>
-                                    <TouchableOpacity style={styles.input} onPress={showDatePicker}>
+                                    <TouchableOpacity style={styles.input} onPress={showTimePicker}>
                                         <View style={styles.rowContainer}>
                                             <Text style={styles.inputText}>Set Time</Text>
-                                            {selectedDate && <Text style={styles.inputText}>{selectedDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</Text>}
+                                            {selectedTime && <Text style={styles.inputText}>{selectedTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</Text>}
                                         </View>
                                     </TouchableOpacity>
                                 </View>
                                 <DateTimePickerModal
-                                    isVisible={isDatePickerVisible}
+                                    isVisible={isTimePickerVisible}
                                     mode="time"
-                                    onConfirm={handleDateConfirm}
-                                    onCancel={hideDatePicker}
+                                    onConfirm={handleTimeConfirm}
+                                    onCancel={hideTimePicker}
                                 />
 
                             </View>
@@ -198,6 +259,18 @@ const HabitCreator = () => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                            <View style={styles.textInputPair}>
+                                <Text style={styles.labelText}>Choose Days</Text>
+                                <View style={styles.containerCenter}>
+                                    <DaySelector
+                                        weekdays={weekdays}
+                                        setWeekdays={setWeekdays}
+                                        activeColor={colors.headerColor}
+                                        textColor='white'
+                                        inactiveColor='grey'
+                                    />
+                                </View>
+                            </View>
                         </View>
                     </TouchableWithoutFeedback>
                 </>
@@ -206,10 +279,7 @@ const HabitCreator = () => {
     );
 }
 
-async function saveHabit() {
-    const dbRef = getDatabase();
-    // set(ref(dbRef, "users/" + auth.currentUser.uid), { preprompt: newCustomPrePromptText.replace(/\n/g, " ").replace(/\s+/g, ' ') });
-}
+
 
 const styles = StyleSheet.create({
     loadingContainer: {
@@ -235,6 +305,7 @@ const styles = StyleSheet.create({
     containerCenter: {
         flexDirection: 'row',
         flex: 1,
+        justifyContent: 'center'
     },
     listContainer: {
         borderColor: 'transparent',
@@ -283,6 +354,9 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 18,
         color: 'white'
+    },
+    day: {
+        backgroundColor: 'red'
     }
 });
 export default HabitCreator
