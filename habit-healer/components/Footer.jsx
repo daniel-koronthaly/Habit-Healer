@@ -7,7 +7,6 @@ import {
 } from 'react-native'
 import { colors } from '../colors/colors'
 import { Ionicons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
 
 const Footer = ({ setCurrentScreen, currentScreen }) => {
   const CustomIconButton = ({ iconName, onPress, disabled, color }) => (

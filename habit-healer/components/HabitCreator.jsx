@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     TouchableOpacity,
     ActivityIndicator,
@@ -7,11 +7,14 @@ import {
     View,
     StyleSheet,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    Switch
 } from 'react-native';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 import Autocomplete from 'react-native-autocomplete-input';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import SubpageHeader from './SubpageHeader';
 const auth = getAuth();
 
 const HabitCreator = () => {
@@ -22,6 +25,12 @@ const HabitCreator = () => {
     const [isFocused, setIsFocused] = useState(false)
 
     const [habitName, setHabitName] = useState('')
+
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    const [shareWithFriends, setShareWithFriends] = useState(false)
+    const toggleSwitch = () => setShareWithFriends(previousState => !previousState);
 
     const uid = auth.currentUser.uid;
 
@@ -63,6 +72,22 @@ const HabitCreator = () => {
         Keyboard.dismiss()
     };
 
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleDateConfirm = (date) => {
+        setSelectedDate(date);
+        hideDatePicker();
+    };
+
+    function cancel() {
+        // set screen to habit overview
+    }
 
     return (
         <View>
@@ -73,42 +98,109 @@ const HabitCreator = () => {
                 </View>
             ) : (
                 // Render actual content once data is loaded
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.container} pointerEvents='box-none'>
-                        <View zIndex={1} style={styles.textInputPair}>
-                            <Text style={styles.labelText}>Habit Category</Text>
-                            <View>
-                                <View style={styles.autocompleteContainer}>
-                                    <Autocomplete
-                                        data={findCategory(query)}
-                                        placeholder={'Select a category'}
-                                        defaultValue={query}
-                                        onFocus={() => setIsFocused(true)}
-                                        onBlur={() => setIsFocused(false)}
-                                        onTextInput={() => setIsFocused(true)}
-                                        onChangeText={(text) => setQuery(text)}
-                                        flatListProps={{
-                                            keyboardShouldPersistTaps: 'handled',
-                                            keyExtractor: (_, idx) => idx.toString(),
-                                            renderItem: ({ item }) => (
-                                                <TouchableOpacity onPress={() => handleSelectCategory(item)}>
-                                                    <Text style={styles.itemText}>{item}</Text>
-                                                </TouchableOpacity>
-                                            ),
-                                        }}
-                                        hideResults={!isFocused}
-                                        inputContainerStyle={styles.inputContainerStyle}
-                                        listContainerStyle={styles.listContainer}
+                <>
+                    <SubpageHeader
+                        title={'Add Habit'}
+                        backButtonFunction={cancel}
+                        rightSideButtonArray={
+                            [
+                                <TouchableOpacity onPress={cancel}>
+                                    <Text style={styles.topRightButtonText}>Cancel</Text>
+                                </TouchableOpacity>,
+
+                                <TouchableOpacity onPress={saveHabit}>
+                                    <Text style={[styles.topRightButtonText, { color: colors.headerColor }]}>Done</Text>
+                                </TouchableOpacity>
+                            ]
+                        }
+                    />
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={styles.container} pointerEvents='box-none'>
+                            <View zIndex={1} style={styles.textInputPair}>
+                                <Text style={styles.labelText}>Habit Category</Text>
+                                <View style={styles.containerCenter}>
+                                    <View style={styles.autocompleteContainer}>
+                                        <Autocomplete
+                                            data={findCategory(query)}
+                                            flatListProps={{
+                                                keyboardShouldPersistTaps: 'handled',
+                                                keyExtractor: (_, idx) => idx.toString(),
+                                                renderItem: ({ item }) => (
+                                                    <TouchableOpacity onPress={() => handleSelectCategory(item)}>
+                                                        <Text style={styles.itemText}>{item}</Text>
+                                                    </TouchableOpacity>
+                                                ),
+                                            }}
+                                            hideResults={!isFocused}
+                                            inputContainerStyle={styles.inputContainerStyle}
+                                            containerStyle={flex = 1}
+                                            listContainerStyle={styles.listContainer}
+                                            renderTextInput={() => (
+                                                <TextInput
+                                                    defaultValue={query}
+                                                    style={styles.input}
+                                                    placeholder="Select a category"
+                                                    onFocus={() => setIsFocused(true)}
+                                                    onBlur={() => setIsFocused(false)}
+                                                    onTextInput={() => setIsFocused(true)}
+                                                    onChangeText={(text) => setQuery(text)}
+                                                    value={query}
+                                                />
+                                            )}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.textInputPair}>
+                                <Text style={styles.labelText}>Habit Name</Text>
+                                <View style={styles.containerCenter}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Set Habit Name"
+                                        onChangeText={setHabitName}
+                                        value={habitName}
                                     />
                                 </View>
                             </View>
+                            <View style={styles.textInputPair}>
+                                <Text style={styles.labelText}>Set Time</Text>
+                                <View style={styles.containerCenter}>
+                                    <TouchableOpacity style={styles.input} onPress={showDatePicker}>
+                                        <View style={styles.rowContainer}>
+                                            <Text style={styles.inputText}>Set Time</Text>
+                                            {selectedDate && <Text style={styles.inputText}>{selectedDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</Text>}
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <DateTimePickerModal
+                                    isVisible={isDatePickerVisible}
+                                    mode="time"
+                                    onConfirm={handleDateConfirm}
+                                    onCancel={hideDatePicker}
+                                />
+
+                            </View>
+                            <View style={styles.textInputPair}>
+                                <Text style={styles.labelText}>Make Public</Text>
+                                <View style={styles.containerCenter}>
+                                    <TouchableOpacity style={styles.input} onPress={toggleSwitch}>
+                                        <View style={styles.rowContainer}>
+                                            <Text style={styles.inputText}>Make Habit Public</Text>
+                                            <View justifyContent={'center'}>
+                                                <Switch
+                                                    value={shareWithFriends}
+                                                    trackColor={{ true: colors.headerColor }}
+                                                    disabled={true}
+                                                />
+                                            </View>
+                                        </View>
+
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
-                        <View style={styles.textInputPair}>
-                            <Text style={styles.labelText}>Habit Name</Text>
-                            <TextInput style={styles.input} />
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
+                </>
             )}
         </View>
     );
@@ -116,7 +208,7 @@ const HabitCreator = () => {
 
 async function saveHabit() {
     const dbRef = getDatabase();
-    set(ref(dbRef, "users/" + auth.currentUser.uid), { preprompt: newCustomPrePromptText.replace(/\n/g, " ").replace(/\s+/g, ' ') });
+    // set(ref(dbRef, "users/" + auth.currentUser.uid), { preprompt: newCustomPrePromptText.replace(/\n/g, " ").replace(/\s+/g, ' ') });
 }
 
 const styles = StyleSheet.create({
@@ -131,21 +223,23 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        padding: 20,
+        padding: 10,
         width: 330,
-        marginBottom: 100,
-        backgroundColor: 'red'
     },
-    inputContainerStyle: {
-        width: 150
+    rowContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    containerCenter: {
+        flexDirection: 'row',
+        flex: 1,
     },
     listContainer: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        maxHeight: 150,
-        width: 150,
-        zIndex: 6
+        borderColor: 'transparent',
+        maxHeight: 300,
+        zIndex: 6,
     },
     autocompleteContainer: {
         flex: 1,
@@ -159,17 +253,36 @@ const styles = StyleSheet.create({
         fontSize: 15,
         margin: 2,
     },
+    inputContainerStyle: {
+        borderColor: 'transparent'
+    },
     input: {
-        height: 40,
+        borderRadius: 25,
+        flex: 1,
+        height: 50,
         borderWidth: 1,
-        padding: 10,
-        width: 150
+        borderColor: 'gray',
+        paddingRight: 10,
+        paddingLeft: 20,
+        justifyContent: 'center',
+        color: 'white'
     },
     labelText: {
-        marginBottom: 12
+        marginBottom: 12,
+        fontWeight: '700',
+        color: 'white'
+    },
+    inputText: {
+        color: 'white'
     },
     textInputPair: {
-        marginBottom: 80
+        height: 60,
+        marginBottom: 30
+    },
+    topRightButtonText: {
+        fontWeight: '700',
+        fontSize: 18,
+        color: 'white'
     }
 });
 export default HabitCreator

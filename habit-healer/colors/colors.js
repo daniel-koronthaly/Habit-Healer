@@ -5,13 +5,13 @@ export const colors = {
     lightTextColor: "black",
 
     // Dark Mode
-    darkBackgroundColor: '#2a2a2b',
+    darkBackgroundColor: 'black',
     darkTextColor: "white",
     darkLoginButtonColor: '#80B9E2',
 
     // App Colors
     defaultButtonColor: 'black',
-    headerColor: '#80B9E2',
+    headerColor: '#70A9D2',
     
 
     randomColor: '#00CC99'

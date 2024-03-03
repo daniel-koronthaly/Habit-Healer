@@ -39,7 +39,7 @@ export default function App() {
   };
   return (
     <View style={[theme == 'light' ? styles.lightTheme : styles.darkTheme, styles.container]}>
-      <Header style={styles.top} />
+      {currentScreen === 'Login' && (<Header style={styles.top} />)}
       <View style={styles.middle}>
         {renderScreen()}
       </View>

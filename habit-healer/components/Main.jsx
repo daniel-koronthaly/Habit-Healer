@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     greeting: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: '700',
         color: 'white',
     },
