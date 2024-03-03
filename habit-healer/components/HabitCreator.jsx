@@ -17,13 +17,15 @@ import Autocomplete from 'react-native-autocomplete-input';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DaySelector from './DaySelector';
 import SubpageHeader from './SubpageHeader';
-import { weekdays } from 'moment';
+
 const auth = getAuth();
 
 const HabitCreator = () => {
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState('');
+
+    // used to hide dropdown menu results when the dropdown is not selected
     const [isFocused, setIsFocused] = useState(false)
 
     const [habitName, setHabitName] = useState('')
@@ -35,13 +37,9 @@ const HabitCreator = () => {
     const toggleSwitch = () => setShareWithFriends(previousState => !previousState);
     const [weekdays, setWeekdays] = React.useState([])
 
-    const uid = auth.currentUser.uid;
-
-
+    // this gets all of the previously used categories of habits by this user
     useEffect(() => {
         const dbRef = ref(getDatabase());
-
-
         get(child(dbRef, "habits/" + auth.currentUser.uid))
             .then(snapshot => {
                 const data = snapshot.val()
@@ -60,6 +58,7 @@ const HabitCreator = () => {
             });
     }, []);
 
+    // returns all categories that match what you have typed: "eati" will match "eating"
     const findCategory = (query) => {
         if (query === '') {
             return categories;
@@ -92,6 +91,7 @@ const HabitCreator = () => {
         // set screen to habit overview
     }
 
+    // returns true if database query can be made and all elements of a habit are selected
     function checkSavable() {
         let savable = true;
         let errorMessage = '';
@@ -126,6 +126,7 @@ const HabitCreator = () => {
         return savable;
     }
 
+    // saves habit in firebase
     function saveHabit() {
         if (checkSavable()) {
             setWeekdays(weekdays.sort())

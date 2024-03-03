@@ -44,6 +44,7 @@ const Main = ({ setCurrentScreen }) => {
         });
     }, [week, userTimezone]);
 
+    // every time a different day is selected, see which habits match that day of the week
     useEffect(() => {
         const fetchData = async () => {
             const dbRef = ref(getDatabase());
