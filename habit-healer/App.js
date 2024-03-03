@@ -13,6 +13,7 @@ import Main from './components/Main'
 import Friends from './components/Friends';
 import HabitOverview from './components/HabitOverview';
 import Calendar from './components/Calendar';
+import HabitCreator from './components/HabitCreator';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Login');
@@ -26,8 +27,8 @@ export default function App() {
         return <Main />
       case 'Friends':
         return <Friends />
-      case 'HabitOverview':
-        return <HabitOverview />
+      case 'Habits':
+        return <HabitCreator />
       case 'Calendar':
         return <Calendar />
       case 'Settings':
