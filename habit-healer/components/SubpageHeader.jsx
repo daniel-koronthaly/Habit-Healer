@@ -56,13 +56,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    header: {
-        backgroundColor: '#fff',
-        width: '100%',
-        padding: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     title: {
         color: "white",
         fontSize: 26,

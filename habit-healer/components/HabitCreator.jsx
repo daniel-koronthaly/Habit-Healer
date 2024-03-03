@@ -126,27 +126,31 @@ const HabitCreator = () => {
         return savable;
     }
 
-    async function saveHabit() {
+    function saveHabit() {
         if (checkSavable()) {
             setWeekdays(weekdays.sort())
             const dbRef = getDatabase();
+            console.log(selectedTime)
             const habit = {
-                "notificationTime": selectedTime,
+                "notificationTime": selectedTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, }),
                 "weekdays": weekdays,
-                "sharesWithFriends": shareWithFriends
+                "sharesWithFriends": shareWithFriends,
+                "dateUpdated": new Date().toDateString()
             }
-            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + category), habit).then(() => {
-                Alert.alert(
-                    "Added new habit",
-                    [
-                        {
-                            text: "OK",
-                        },
-                    ]
-                );
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + category + "/" + habitName), habit).then(() => {
+                // Alert.alert(
+                //     "Added new habit",
+                //     [
+                //         {
+                //             text: "OK",
+                //         },
+                //     ]
+                // );
+                // Why is this crashing
             }).catch((error) => {
                 console.log("Failed to write habit to database " + error);
             });
+            
         }
     }
 
@@ -187,7 +191,7 @@ const HabitCreator = () => {
                                                 keyboardShouldPersistTaps: 'handled',
                                                 keyExtractor: (_, idx) => idx.toString(),
                                                 renderItem: ({ item }) => (
-                                                    <TouchableOpacity onPress={() => handleSelectCategory(item)}>
+                                                    <TouchableOpacity style={styles.listItem} onPress={() => handleSelectCategory(item)}>
                                                         <Text style={styles.itemText}>{item}</Text>
                                                     </TouchableOpacity>
                                                 ),
@@ -319,6 +323,10 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         zIndex: 5,
+    },
+    listItem: {
+        justifyContent: 'center',
+        height: 30
     },
     itemText: {
         fontSize: 15,

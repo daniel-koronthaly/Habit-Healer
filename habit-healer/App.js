@@ -24,7 +24,7 @@ export default function App() {
       case 'Login':
         return <Login setCurrentScreen={setCurrentScreen} />
       case 'Main':
-        return <Main />
+        return <Main setCurrentScreen={setCurrentScreen}/>
       case 'Friends':
         return <Friends />
       case 'Habits':
