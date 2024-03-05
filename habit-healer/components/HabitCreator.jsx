@@ -134,7 +134,6 @@ const HabitCreator = () => {
         if (checkSavable()) {
             setWeekdays(weekdays.sort())
             const dbRef = getDatabase();
-            console.log(selectedTime)
             const habit = {
                 "notificationTime": selectedTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, }),
                 "weekdays": weekdays,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,12 +6,34 @@ import { Ionicons } from '@expo/vector-icons';
 const auth = getAuth();
 
 const HabitList = ({ habits, currentDate }) => {
-    const sortedHabits = habits.slice().sort(sortHabits);
+
+    const [sortedHabits, setSortedHabits] = useState([...habits].sort(sortHabits));
+
+    useEffect(() => {
+        const newSortedHabits = [...habits].sort(sortHabits);
+        if (!areArraysEqual(newSortedHabits, sortedHabits)) {
+            setSortedHabits(newSortedHabits);
+        }
+    }, [habits, sortHabits]);
+
+    const areArraysEqual = (array1, array2) => {
+        if (array1.length !== array2.length) {
+            return false;
+        }
+
+        for (let i = 0; i < array1.length; i++) {
+            if (array1[i] !== array2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    };
 
     function sortHabits(a, b) {
         const hasDatesCompletedA = "datesCompleted" in a.habit
         const hasDatesCompletedB = "datesCompleted" in b.habit
-
+        
         if (hasDatesCompletedA !== hasDatesCompletedB) {
             return hasDatesCompletedA - hasDatesCompletedB
         }
@@ -63,6 +85,11 @@ const HabitList = ({ habits, currentDate }) => {
                 set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
             }
         }
+
+        const modifiedHabits = sortedHabits.map((originalItem) =>
+            originalItem.id === item.id ? item : originalItem
+        );
+        setSortedHabits(modifiedHabits.sort(sortHabits))
     }
 
     function checkNotDone(item) {
@@ -81,7 +108,6 @@ const HabitList = ({ habits, currentDate }) => {
             if (!existingDateEntry) {
                 item.habit.datesCompleted.push(dateEntry)
                 item.habit.datesCompleted.sort((a, b) => sortByDate(a, b))
-                console.log(item.habit.datesCompleted)
                 set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
             }
             else if (existingDateEntry.completed) {
@@ -89,18 +115,26 @@ const HabitList = ({ habits, currentDate }) => {
                 set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
             }
         }
+        const modifiedHabits = sortedHabits.map((originalItem) =>
+            originalItem.id === item.id ? item : originalItem
+        );
+        setSortedHabits(modifiedHabits.sort(sortHabits))
     }
 
     function removeCompletedEntry(item) {
         const dbRef = getDatabase();
-        item.habit.datesCompleted = Object.keys(item.habit.datesCompleted)
-        .filter(key => item.habit.datesCompleted[key].date !== currentDate)
-        .reduce((acc, key) => {
-            acc[key] = myDictionary[key];
-            return acc;
-          }, {})
-        set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
-
+        item.habit.datesCompleted = item.habit.datesCompleted.filter(entry => entry.date !== currentDate)
+        if (item.habit.datesCompleted.length === 0) {
+            delete item.habit.datesCompleted;
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), null)
+        }
+        else {
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+        }
+        const modifiedHabits = sortedHabits.map((originalItem) =>
+            originalItem.id === item.id ? item : originalItem
+        );
+        setSortedHabits(modifiedHabits.sort(sortHabits))
     }
 
     const renderItem = ({ item, index }) => {
@@ -109,16 +143,16 @@ const HabitList = ({ habits, currentDate }) => {
         if (hasDatesCompleted) {
             dateMatch = Object.values(item.habit.datesCompleted).find(entry => entry.date === currentDate)
         }
-        const isDone = hasDatesCompleted && dateMatch != null && dateMatch.completed
+        const isDone = hasDatesCompleted && dateMatch !== undefined && dateMatch.completed
         return (
             <View style={styles.listItem}>
                 <View style={styles.left}>
-                    <Text style={!hasDatesCompleted ? styles.habitText : styles.habitTextCompleted}>{item.habitName}</Text>
-                    <Text style={!hasDatesCompleted ? styles.habitSubtitleText : styles.habitSubtitleTextCompleted}>
+                    <Text style={!dateMatch ? styles.habitText : styles.habitTextCompleted}>{item.habitName}</Text>
+                    <Text style={!dateMatch ? styles.habitSubtitleText : styles.habitSubtitleTextCompleted}>
                         Time set at {item.habit.notificationTime}
                     </Text>
                 </View>
-                {!hasDatesCompleted ? (
+                {!dateMatch ? (
                     <View style={styles.right}>
                         <TouchableOpacity style={styles.button} onPress={() => { checkNotDone(item) }}>
                             <Ionicons name={'close-outline'} size={20} color="white" />
