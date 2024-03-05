@@ -16,6 +16,7 @@ import 'moment-timezone';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 import HabitList from './HabitList';
+import HabitFilter from './HabitFilter';
 
 const windowWidth = Dimensions.get('window').width;
 const Main = ({ setCurrentScreen }) => {
@@ -24,10 +25,13 @@ const Main = ({ setCurrentScreen }) => {
 
     const swiper = useRef();
     const [value, setValue] = useState(new Date());
+    const currentDate = value.toLocaleDateString('en-US', { timeZone: userTimezone })
     const [week, setWeek] = useState(0);
 
     const [loadingHabits, setLoadingHabits] = useState(true);
     const [habits, setHabits] = useState([])
+
+    const [selectedCategory, setSelectedCategory] = useState('All')
 
     const auth = getAuth();
 
@@ -89,8 +93,11 @@ const Main = ({ setCurrentScreen }) => {
     }, [value]);
 
     const memoizedHabits = useMemo(() => habits, [habits]);
-
-    console.log(habits)
+    let filteredHabits = memoizedHabits
+    if (selectedCategory !== 'All'){
+        filteredHabits = filteredHabits.filter(item => item.category === selectedCategory)
+    }
+    
     var timeOfDay = null;
     var emoji = null;
     if (hour < 12) {
@@ -158,6 +165,7 @@ const Main = ({ setCurrentScreen }) => {
                     </Swiper>
                 </View>
             </View>
+            <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
             <View style={styles.habitsContainer}>
                 {loadingHabits ? (
                     // Render a loading indicator or temporary screen while waiting for data
@@ -174,7 +182,7 @@ const Main = ({ setCurrentScreen }) => {
                         </View>
                     ) : (
                         <View style={styles.loadingContainerHorizontal}>
-                            <HabitList habits={memoizedHabits}></HabitList>
+                            <HabitList habits={filteredHabits} currentDate={currentDate}></HabitList>
                         </View>
                     )
                 )}
@@ -230,8 +238,7 @@ const styles = StyleSheet.create({
     },
     picker: {
         flex: 1,
-        maxHeight: 110,
-        paddingVertical: 12,
+        paddingVertical: 10,
         flexDirection: 'row',
         alignItems: 'center',
     },

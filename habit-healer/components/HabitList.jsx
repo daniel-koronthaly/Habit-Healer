@@ -1,20 +1,93 @@
 import React from 'react';
 import { FlatList, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 
-const HabitList = ({ habits }) => {
-    const sortedHabits = habits.slice().sort((a, b) => {
-        const timeA = new Date(a.notificationTime).getTime();
-        const timeB = new Date(b.notificationTime).getTime();
-        return timeA - timeB;
-    });
+const auth = getAuth();
 
-    function checkDone() {
-        // TO-DO
+const HabitList = ({ habits, currentDate }) => {
+    const sortedHabits = habits.slice().sort(sortHabits);
+
+    function sortHabits(a, b) {
+        const parseTime = (timeString) => {
+            const [time, period] = timeString.split(' ');
+            const [hours, minutes] = time.split(':').map(Number);
+            const adjustedHours = period === 'PM' ? hours + 12 : hours;
+            return adjustedHours * 60 + minutes;
+        };
+
+        const timeA = parseTime(a.habit.notificationTime);
+        const timeB = parseTime(b.habit.notificationTime);
+        return timeA - timeB;
     }
 
-    function checkNotDone() {
-        // TO-DO
+    function sortByDate(a, b) {
+        const parseDate = (dateString) => {
+            const [month, day, year] = dateString.split('/').map(Number);
+            return new Date(year, month - 1, day); // Month is 0-indexed in JavaScript Date
+        };
+
+        const dateA = parseDate(a.date);
+        const dateB = parseDate(b.date);
+
+        return dateA - dateB;
+    }
+
+    function checkDone(item) {
+        const dateEntry = {
+            "date": currentDate,
+            "completed": true
+        }
+        const dbRef = getDatabase();
+
+        if (!item.habit.datesCompleted) {
+            item.habit.datesCompleted = [dateEntry]
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+        }
+        else {
+            const existingDateEntry = item.habit.datesCompleted.find(entry => entry.date === dateEntry.date);
+            if (!existingDateEntry) {
+                item.habit.datesCompleted.push(dateEntry)
+                item.habit.datesCompleted.sort((a, b) => sortByDate(a, b))
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            }
+            else if (!existingDateEntry.completed) {
+                existingDateEntry.completed = true;
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            }
+        }
+    }
+
+    function checkNotDone(item) {
+        const dateEntry = {
+            "date": currentDate,
+            "completed": false
+        }
+        const dbRef = getDatabase();
+
+        if (!item.habit.datesCompleted) {
+            item.habit.datesCompleted = [dateEntry]
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+        }
+        else {
+            const existingDateEntry = item.habit.datesCompleted.find(entry => entry.date === dateEntry.date);
+            if (!existingDateEntry) {
+                item.habit.datesCompleted.push(dateEntry)
+                item.habit.datesCompleted.sort((a, b) => sortByDate(a, b))
+                console.log(item.habit.datesCompleted)
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            }
+            else if (existingDateEntry.completed) {
+                existingDateEntry.completed = false;
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            }
+        }
+    }
+
+    function removeCompletedEntry(item) {
+        const dbRef = getDatabase();
+        set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), null)
+
     }
 
     const renderItem = ({ item, index }) => (
@@ -24,11 +97,11 @@ const HabitList = ({ habits }) => {
                 <Text style={styles.habitSubtitleText}>Time set at {item.habit.notificationTime}</Text>
             </View>
             <View style={styles.right}>
-                <TouchableOpacity style={styles.button} onPress={checkNotDone}>
+                <TouchableOpacity style={styles.button} onPress={() => { checkNotDone(item) }}>
                     <Ionicons name={'close-outline'} size={20} color="white" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={checkDone}>
+                <TouchableOpacity style={styles.button} onPress={() => { checkDone(item) }}>
                     <Ionicons name={'checkmark-outline'} size={20} color="white" />
                 </TouchableOpacity>
             </View>
