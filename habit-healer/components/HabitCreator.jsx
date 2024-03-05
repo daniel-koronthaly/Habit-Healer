@@ -9,7 +9,8 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
     Keyboard,
-    Switch
+    Switch,
+    useColorScheme
 } from 'react-native';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
@@ -36,6 +37,8 @@ const HabitCreator = () => {
     const [shareWithFriends, setShareWithFriends] = useState(false)
     const toggleSwitch = () => setShareWithFriends(previousState => !previousState);
     const [weekdays, setWeekdays] = React.useState([])
+
+    const theme = useColorScheme();
 
     // this gets all of the previously used categories of habits by this user
     useEffect(() => {
@@ -168,10 +171,12 @@ const HabitCreator = () => {
                     <SubpageHeader
                         title={'Add Habit'}
                         backButtonFunction={cancel}
+                        // backButtonStyle={{ color: colors.headerColor }}
+                        // titleStyle={{ color: 'black' }}
                         rightSideButtonArray={
                             [
                                 <TouchableOpacity onPress={cancel}>
-                                    <Text style={styles.topRightButtonText}>Cancel</Text>
+                                    <Text style={[styles.topRightButtonText, theme == 'light' ? styles.lightText : styles.darkText]}>Cancel</Text>
                                 </TouchableOpacity>,
 
                                 <TouchableOpacity onPress={saveHabit}>
@@ -183,7 +188,7 @@ const HabitCreator = () => {
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.container} pointerEvents='box-none'>
                             <View zIndex={1} style={styles.textInputPair}>
-                                <Text style={styles.labelText}>Habit Category</Text>
+                                <Text style={[styles.labelText, theme == 'light' ? styles.lightText : styles.darkText]}>Habit Category</Text>
                                 <View style={styles.containerCenter}>
                                     <View style={styles.autocompleteContainer}>
                                         <Autocomplete
@@ -204,8 +209,9 @@ const HabitCreator = () => {
                                             renderTextInput={() => (
                                                 <TextInput
                                                     defaultValue={category}
-                                                    style={styles.input}
+                                                    style={[styles.input, theme == 'light' ? styles.lightText : styles.darkText]}
                                                     placeholder="Select a category"
+                                                    //placeholderTextColor={theme == 'light' ? colors.lightTextColor : colors.darkTextColor}
                                                     onFocus={() => setIsFocused(true)}
                                                     onBlur={() => setIsFocused(false)}
                                                     onTextInput={() => setIsFocused(true)}
@@ -218,18 +224,19 @@ const HabitCreator = () => {
                                 </View>
                             </View>
                             <View style={styles.textInputPair}>
-                                <Text style={styles.labelText}>Habit Name</Text>
+                                <Text style={[styles.labelText, theme == 'light' ? styles.lightText : styles.darkText]}>Habit Name</Text>
                                 <View style={styles.containerCenter}>
                                     <TextInput
-                                        style={styles.input}
+                                        style={[styles.input, theme == 'light' ? styles.lightText : styles.darkText]}
                                         placeholder="Set Habit Name"
+                                        //placeholderTextColor={theme == 'light' ? colors.lightTextColor : colors.darkTextColor}
                                         onChangeText={setHabitName}
                                         value={habitName}
                                     />
                                 </View>
                             </View>
                             <View style={styles.textInputPair}>
-                                <Text style={styles.labelText}>Set Time</Text>
+                                <Text style={[styles.labelText, theme == 'light' ? styles.lightText : styles.darkText]}>Set Time</Text>
                                 <View style={styles.containerCenter}>
                                     <TouchableOpacity style={styles.input} onPress={showTimePicker}>
                                         <View style={styles.rowContainer}>
@@ -247,7 +254,7 @@ const HabitCreator = () => {
 
                             </View>
                             <View style={styles.textInputPair}>
-                                <Text style={styles.labelText}>Make Public</Text>
+                                <Text style={[styles.labelText, theme == 'light' ? styles.lightText : styles.darkText]}>Make Public</Text>
                                 <View style={styles.containerCenter}>
                                     <TouchableOpacity style={styles.input} onPress={toggleSwitch}>
                                         <View style={styles.rowContainer}>
@@ -265,7 +272,7 @@ const HabitCreator = () => {
                                 </View>
                             </View>
                             <View style={styles.textInputPair}>
-                                <Text style={styles.labelText}>Choose Days</Text>
+                                <Text style={[styles.labelText, theme == 'light' ? styles.lightText : styles.darkText]}>Choose Days</Text>
                                 <View style={styles.containerCenter}>
                                     <DaySelector
                                         weekdays={weekdays}
@@ -362,10 +369,16 @@ const styles = StyleSheet.create({
     topRightButtonText: {
         fontWeight: '700',
         fontSize: 18,
-        color: 'white'
+        //color: 'white'
     },
     day: {
         backgroundColor: 'red'
+    },
+    lightText: {
+        color: colors.lightTextColor
+    },
+    darkText: {
+        color: colors.darkTextColor
     }
 });
 export default HabitCreator

@@ -7,7 +7,8 @@ import {
     TouchableWithoutFeedback,
     Dimensions,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    useColorScheme,
 } from 'react-native'
 import Swiper from 'react-native-swiper';
 import moment from 'moment';
@@ -29,6 +30,8 @@ const Main = ({ setCurrentScreen }) => {
     const [habits, setHabits] = useState([])
 
     const auth = getAuth();
+
+    const theme = useColorScheme();
 
     // Generate the weeks array based on the current week
     const weeks = React.useMemo(() => {
@@ -106,7 +109,7 @@ const Main = ({ setCurrentScreen }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.greetingContainer}>
-                <Text style={styles.greeting}>
+                <Text style={[styles.greeting, theme == 'light' ? styles.lightText : styles.darkText]}>
                     Good {timeOfDay} {emoji}
                 </Text>
             </View>
@@ -138,7 +141,7 @@ const Main = ({ setCurrentScreen }) => {
                                     return (
                                         <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
                                             <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
-                                                <Text style={[styles.itemWeekday, isActive && { color: '#fff' }]}>
+                                                <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
                                                     {item.weekday}
                                                 </Text>
                                                 <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
@@ -164,7 +167,7 @@ const Main = ({ setCurrentScreen }) => {
                 ) : (
                     memoizedHabits.length === 0 ? (
                         <View style={styles.addHabit}>
-                            <Text style={styles.addHabitText}>Add your first habit to get started</Text>
+                            <Text style={[styles.addHabitText, theme == 'light' ? styles.lightText : styles.darkText]}>Add your first habit to get started!</Text>
                             <TouchableOpacity style={styles.addHabitButton} onPress={() => { setCurrentScreen('Habits'); }}>
                                 <Text style={styles.addHabitText}>Add Habit</Text>
                             </TouchableOpacity>
@@ -219,7 +222,7 @@ const styles = StyleSheet.create({
     greeting: {
         fontSize: 24,
         fontWeight: '700',
-        color: 'white',
+        //color: 'white',
     },
     container: {
         flex: 1,
@@ -272,6 +275,12 @@ const styles = StyleSheet.create({
     },
     inactive: {
 
+    },
+    lightText: {
+        color: colors.lightTextColor
+    },
+    darkText: {
+        color: colors.darkTextColor
     }
 });
 
