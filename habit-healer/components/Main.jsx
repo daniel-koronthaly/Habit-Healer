@@ -94,10 +94,10 @@ const Main = ({ setCurrentScreen }) => {
 
     const memoizedHabits = useMemo(() => habits, [habits]);
     let filteredHabits = memoizedHabits
-    if (selectedCategory !== 'All'){
+    if (selectedCategory !== 'All') {
         filteredHabits = filteredHabits.filter(item => item.category === selectedCategory)
     }
-    
+
     var timeOfDay = null;
     var emoji = null;
     if (hour < 12) {
@@ -120,52 +120,52 @@ const Main = ({ setCurrentScreen }) => {
                     Good {timeOfDay} {emoji}
                 </Text>
             </View>
-            <View style={styles.container}>
-                <View style={styles.picker}>
-                    <Swiper
-                        index={1}
-                        ref={swiper}
-                        loop={false}
-                        showsPagination={false}
-                        onIndexChanged={ind => {
-                            if (ind === 1) {
-                                return;
-                            }
-                            setTimeout(() => {
-                                const newIndex = ind - 1;
-                                const newWeek = week + newIndex;
-                                setWeek(newWeek);
-                                setValue(moment(value).add(newIndex, 'week').toDate());
-                                swiper.current.scrollTo(1, false);
-                            }, 100);
-                        }}
-                    >
-                        {weeks.map((dates, index) => (
-                            <View style={[styles.itemRow]} key={index}>
-                                {dates.map((item, dateIndex) => {
-                                    const isActive =
-                                        value.toDateString() === item.date.toDateString();
-                                    return (
-                                        <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
-                                            <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
-                                                <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
-                                                    {item.weekday}
+            <View style={styles.picker}>
+                <Swiper
+                    index={1}
+                    ref={swiper}
+                    loop={false}
+                    showsPagination={false}
+                    onIndexChanged={ind => {
+                        if (ind === 1) {
+                            return;
+                        }
+                        setTimeout(() => {
+                            const newIndex = ind - 1;
+                            const newWeek = week + newIndex;
+                            setWeek(newWeek);
+                            setValue(moment(value).add(newIndex, 'week').toDate());
+                            swiper.current.scrollTo(1, false);
+                        }, 100);
+                    }}
+                >
+                    {weeks.map((dates, index) => (
+                        <View style={[styles.itemRow]} key={index}>
+                            {dates.map((item, dateIndex) => {
+                                const isActive =
+                                    value.toDateString() === item.date.toDateString();
+                                return (
+                                    <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
+                                        <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
+                                            <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
+                                                {item.weekday}
+                                            </Text>
+                                            <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
+                                                <Text style={[styles.itemDate, isActive && { color: '#fff' }]}>
+                                                    {item.date.getDate()}
                                                 </Text>
-                                                <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
-                                                    <Text style={[styles.itemDate, isActive && { color: '#fff' }]}>
-                                                        {item.date.getDate()}
-                                                    </Text>
-                                                </View>
                                             </View>
-                                        </TouchableWithoutFeedback>
-                                    );
-                                })}
-                            </View>
-                        ))}
-                    </Swiper>
-                </View>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                );
+                            })}
+                        </View>
+                    ))}
+                </Swiper>
             </View>
-            <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+            {(memoizedHabits.length > 0) &&
+                <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+            }
             <View style={styles.habitsContainer}>
                 {loadingHabits ? (
                     // Render a loading indicator or temporary screen while waiting for data
@@ -232,13 +232,9 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         //color: 'white',
     },
-    container: {
-        flex: 1,
-        width: windowWidth,
-    },
     picker: {
         flex: 1,
-        paddingVertical: 10,
+        width: windowWidth,
         flexDirection: 'row',
         alignItems: 'center',
     },
