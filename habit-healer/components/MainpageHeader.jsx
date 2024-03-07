@@ -35,13 +35,11 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingTop: StatusBar.currentHeight || 40,
         paddingBottom: 20,
-        marginBottom: 20
+        marginBottom: 20,
     },
     container: {
-        width: 330,
-        paddingLeft: 10,
-        paddingTop: 10,
-        paddingBottom: 10,
+        width: '100%',
+        padding: 10,
         flexDirection: 'row',
         alignItems: 'center',
     },

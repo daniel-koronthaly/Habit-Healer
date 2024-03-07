@@ -89,7 +89,7 @@ const HabitOverview = ({ setCurrentScreen }) => {
                         </View>
                     ) : (
                         <View style={styles.loadingContainerHorizontal}>
-                            <HabitOverviewList habits={habits}></HabitOverviewList>
+                            <HabitOverviewList habits={habits} setCurrentScreen={setCurrentScreen}/>
                         </View>
                     )
                 )}

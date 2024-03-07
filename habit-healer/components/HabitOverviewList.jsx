@@ -8,21 +8,36 @@ const auth = getAuth();
 
 const SubList = ({ habits, setCurrentScreen }) => {
     const renderItem = ({ item, index }) => {
+        const days = ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa']
         return (
             <View style={styles.listItem}>
                 <View style={styles.left}>
                     <Text style={styles.habitText}>{item.habitName}</Text>
-                    <Text style={styles.habitSubtitleText}>
-                        Time set at {item.habit.notificationTime}
-                    </Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        {days.map((day, index) => (
+                            <Text
+                                key={index}
+                                style={
+                                    [styles.habitSubtitleWeekdays,
+                                    { color: item.habit.weekdays.includes(index) ? 'white' : 'gray' }
+                                    ]
+                                }
+                            >
+                                {day}
+                            </Text>
+                        ))}
+                        <Text style={[styles.habitSubtitleText, {marginLeft:10}]}>
+                            {item.habit.notificationTime}
+                        </Text>
+                    </View>
                 </View>
                 <View style={styles.right}>
-                    <TouchableOpacity style={styles.button} onPress={() => { }}>
-                        <Ionicons name={'close-outline'} size={20} color="white" />
+                    <TouchableOpacity style={styles.button} onPress={() => { setCurrentScreen('EditHabit') }}>
+                        <Ionicons name={'pencil-outline'} size={20} color="white" />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress={() => { }}>
-                        <Ionicons name={'checkmark-outline'} size={20} color="white" />
+                    <TouchableOpacity style={styles.button} onPress={() => { setCurrentScreen('Stats') }}>
+                        <Text style={styles.completedText}>Stats</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -68,6 +83,11 @@ const HabitList = ({ habits, setCurrentScreen }) => {
         return acc;
     }, []);
 
+    // This makes all sections expanded by default, otherwise they would be collapsed
+    useEffect(() => {
+        const allSectionIndices = groupedData.map((_, index) => index);
+        setExpandedSections(allSectionIndices);
+    }, []);
 
     const sortedData = groupedData.map((subarray) => subarray.sort(sortHabits));
 
@@ -91,13 +111,24 @@ const HabitList = ({ habits, setCurrentScreen }) => {
         return timeA - timeB;
     }
 
-    const renderSectionHeader = ({ section }) => (
-        <TouchableOpacity onPress={() => toggleSection(section.index)}>
-            <View style={{ backgroundColor: 'lightgray', padding: 10 }}>
-                <Text>{section.title}</Text>
+    const renderSectionHeader = ({ section }) => {
+        const isSectionExpanded = expandedSections.includes(section.index);
+
+        return (<TouchableOpacity onPress={() => toggleSection(section.index)}>
+            <View style={styles.container}>
+                <View style={styles.left}>
+                    <Text style={styles.headerText}>{section.title}</Text>
+                </View>
+                <View style={styles.right}>
+                    {isSectionExpanded ?
+                        (<Ionicons name={'chevron-up-outline'} size={20} color="white" />) :
+                        (<Ionicons name={'chevron-down-outline'} size={20} color="white" />)}
+
+                </View>
             </View>
-        </TouchableOpacity>
-    );
+        </TouchableOpacity>)
+    }
+
 
     const renderItem = () => null // All the data is displayed in the footer
 
@@ -116,7 +147,7 @@ const HabitList = ({ habits, setCurrentScreen }) => {
             extraData={expandedSections}
             renderSectionFooter={({ section }) => (
                 expandedSections.includes(section.index) && (
-                    <SubList habits={section.data} />
+                    <SubList habits={section.data} setCurrentScreen={setCurrentScreen} />
                 )
             )}
         />
@@ -154,6 +185,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10
     },
+    headerText: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: 'white',
+    },
     habitText: {
         fontSize: 20,
         fontWeight: '600',
@@ -168,6 +204,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '400',
         color: 'gray',
+    },
+    habitSubtitleWeekdays: {
+        fontSize: 14,
+        fontWeight: '400',
     },
     habitSubtitleTextCompleted: {
         fontSize: 14,
@@ -187,7 +227,7 @@ const styles = StyleSheet.create({
     completedText: {
         fontSize: 10,
         fontWeight: '600',
-        color: 'gray',
+        color: 'white',
     }
 })
 export default HabitList;

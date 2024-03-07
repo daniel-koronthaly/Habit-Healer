@@ -10,6 +10,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Switch,
+    Dimensions,
     useColorScheme
 } from 'react-native';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        width: 330,
+        width: Dimensions.get('window').width,
     },
     rowContainer: {
         flex: 1,

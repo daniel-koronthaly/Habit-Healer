@@ -38,15 +38,14 @@ const SubpageHeader = ({ title, backButtonFunction, rightSideButtonArray }) => {
 
 const styles = StyleSheet.create({
     outerContainer: {
-        width: 330,
+        width: "100%",
         paddingTop: StatusBar.currentHeight || 40,
         paddingBottom: 20,
-        marginBottom: 20
+        marginBottom: 20,
     },
     container: {
         width: '100%',
-        paddingTop: 10,
-        paddingBottom: 10,
+        padding: 10,
         flexDirection: 'row',
         alignItems: 'center',
     },

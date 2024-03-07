@@ -3,7 +3,8 @@ import {
     View,
     TouchableOpacity,
     StyleSheet,
-    useColorScheme
+    useColorScheme,
+    Dimensions
 } from 'react-native'
 import MainpageHeader from './MainpageHeader'
 import { colors } from '../colors/colors';
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        width: 330,
+        width: Dimensions.get('window').width,
     },
     topRightButtonText: {
         fontWeight: '700',
