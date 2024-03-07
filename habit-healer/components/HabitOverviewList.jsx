@@ -19,7 +19,7 @@ const SubList = ({ habits, setCurrentScreen }) => {
                                 key={index}
                                 style={
                                     [styles.habitSubtitleWeekdays,
-                                    { color: item.habit.weekdays.includes(index) ? 'white' : 'gray' }
+                                    { color: item.habit.weekdays.includes(index+1) ? 'white' : 'gray' }
                                     ]
                                 }
                             >
