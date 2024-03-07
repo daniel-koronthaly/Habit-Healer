@@ -54,6 +54,7 @@ const Main = ({ setCurrentScreen }) => {
     // every time a different day is selected, see which habits match that day of the week
     useEffect(() => {
         const fetchData = async () => {
+            setLoadingHabits(true);
             const dbRef = ref(getDatabase());
             try {
                 const snapshot = await get(child(dbRef, "habits/" + auth.currentUser.uid))
@@ -80,11 +81,12 @@ const Main = ({ setCurrentScreen }) => {
                 } else {
                     console.log("no habits found")
                 }
-
+                setSelectedCategory('All')
                 setLoadingHabits(false);
             }
             catch (error) {
                 console.error('Error fetching habits:', error);
+                setSelectedCategory('All')
                 setLoadingHabits(false);
             }
         };
@@ -163,7 +165,7 @@ const Main = ({ setCurrentScreen }) => {
                     ))}
                 </Swiper>
             </View>
-            {(memoizedHabits.length > 0) &&
+            {(memoizedHabits.length > 0 && !loadingHabits) &&
                 <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
             }
             <View style={styles.habitsContainer}>
