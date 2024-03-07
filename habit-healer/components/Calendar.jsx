@@ -1,128 +1,94 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, Text, Dimensions, useColorScheme } from 'react-native';
-import moment from 'moment';
-import 'moment-timezone';
-import Swiper from 'react-native-swiper';
-import JournalEntry from './JournalEntry';
+import React, { useState, useEffect } from 'react';
+import {
+    Alert,
+    TouchableOpacity,
+    ActivityIndicator,
+    Text,
+    TextInput,
+    View,
+    StyleSheet,
+    useColorScheme
+} from 'react-native';
+import SubpageHeader from './SubpageHeader';
+import { Ionicons } from '@expo/vector-icons';
+import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 
-const windowWidth = Dimensions.get('window').width;
-
 const Calendar = () => {
-    const userTimezone = Intl.DateTimeFormat(undefined, { timeZoneName: 'long' }).resolvedOptions().timeZone;
-    const swiper = useRef();
-    const [value, setValue] = useState(new Date());
-    const [week, setWeek] = useState(0);
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const yearInitial = new Date().toLocaleString('en-US', { year: 'numeric', timeZone: userTimezone });
+    const [year, setYear] = useState(yearInitial)
+
+
     const theme = useColorScheme();
 
-    // Generate the weeks array based on the current week
-    const weeks = React.useMemo(() => {
-        const start = moment().add(week, 'weeks').startOf('week');
-        return [-1, 0, 1].map(adj => {
-            return Array.from({ length: 7 }).map((_, index) => {
-                const date = moment(start).add(adj, 'week').add(index, 'day');
-                return {
-                    weekday: date.format('ddd'),
-                    date: date.toDate(),
-                };
-            });
-        });
-    }, [week, userTimezone]);
+    function cancel() {
+        // set screen to habit overview
+    }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View>
+            <>
+                <SubpageHeader
+                    title={'Calendar'}
+                    backButtonFunction={cancel}
+                    // backButtonStyle={{ color: colors.headerColor }}
+                    // titleStyle={{ color: 'black' }}
+                    rightSideButtonArray={
+                        [
+                            <TouchableOpacity onPress={() => {setYear(year-1)}}>
+                                <Ionicons name={'chevron-back-outline'} size={20} color="white" />
+                            </TouchableOpacity>,
+                            <Text style={styles.year}>
+                                {year}
+                            </Text>,
+                            <TouchableOpacity onPress={() => {setYear(year+1)}}>
+                                <Ionicons name={'chevron-forward-outline'} size={20} color="white" />
+                            </TouchableOpacity>
+                        ]
+                    }
+                />
+            </>
             <View style={styles.container}>
-                <View style={styles.picker}>
-                    <Swiper
-                        index={1}
-                        ref={swiper}
-                        loop={false}
-                        showsPagination={false}
-                        onIndexChanged={ind => {
-                            if (ind === 1) {
-                                return;
-                            }
-                            setTimeout(() => {
-                                const newIndex = ind - 1;
-                                const newWeek = week + newIndex;
-                                setWeek(newWeek);
-                                setValue(moment(value).add(newIndex, 'week').toDate());
-                                swiper.current.scrollTo(1, false);
-                            }, 100);
-                        }}
-                    >
-                        {weeks.map((dates, index) => (
-                            <View style={[styles.itemRow]} key={index}>
-                                {dates.map((item, dateIndex) => {
-                                    const isActive =
-                                        value.toDateString() === item.date.toDateString();
-                                    return (
-                                        <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
-                                            <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
-                                                <Text style={[styles.itemWeekday, isActive && { color: '#fff' }]}>
-                                                    {item.weekday}
-                                                </Text>
-                                                <Text style={[styles.itemDate, isActive && { color: '#fff' }]}>
-                                                    {item.date.getDate()}
-                                                </Text>
-                                            </View>
-                                        </TouchableWithoutFeedback>
-                                    );
-                                })}
-                            </View>
-                        ))}
-                    </Swiper>
-                </View>
-                <View style={{ flex: 1, paddingHorizontal: 10 }}>
-                    <ScrollView>
-                        <JournalEntry selectedDate={value} />
-                    </ScrollView>
-                </View>
+                <Text style={{ color: 'white' }}>Hello</Text>
             </View>
-        </SafeAreaView>
-    );
+        </View>
+    )
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: windowWidth,
+        padding: 10,
+        width: 330,
     },
-    picker: {
+    rowContainer: {
         flex: 1,
-        maxHeight: 74,
-        paddingVertical: 12,
         flexDirection: 'row',
-        alignItems: 'center',
-    },
-    itemRow: {
-        width: windowWidth,
-        flexDirection: 'row',
-        alignItems: 'flex-start',
         justifyContent: 'space-between',
-        paddingHorizontal: 5
+        alignItems: 'center'
     },
-    item: {
+    containerCenter: {
+        flexDirection: 'row',
         flex: 1,
-        height: 50,
-        marginHorizontal: 4,
-        paddingVertical: 6,
-        borderWidth: 1,
-        borderRadius: 8,
-        borderColor: colors.specialButtonColor,
-        flexDirection: 'column',
-        alignItems: 'center',
+        justifyContent: 'center'
     },
-    itemWeekday: {
-        fontSize: 13,
-        fontWeight: '500',
-        color: colors.specialButtonColor,
-        marginBottom: 4,
+    topRightButtonText: {
+        fontWeight: '700',
+        fontSize: 18,
+        //color: 'white'
     },
-    itemDate: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: 'grey',
+    year: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: 'bold',
     },
-});
+    lightText: {
+        color: colors.lightTextColor
+    },
+    darkText: {
+        color: colors.darkTextColor
+    }
+})
+
 export default Calendar;

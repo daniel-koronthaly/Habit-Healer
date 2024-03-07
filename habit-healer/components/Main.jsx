@@ -176,7 +176,7 @@ const Main = ({ setCurrentScreen }) => {
                     memoizedHabits.length === 0 ? (
                         <View style={styles.addHabit}>
                             <Text style={[styles.addHabitText, theme == 'light' ? styles.lightText : styles.darkText]}>Add your first habit to get started!</Text>
-                            <TouchableOpacity style={styles.addHabitButton} onPress={() => { setCurrentScreen('Habits'); }}>
+                            <TouchableOpacity style={styles.addHabitButton} onPress={() => { setCurrentScreen('HabitCreator'); }}>
                                 <Text style={styles.addHabitText}>Add Habit</Text>
                             </TouchableOpacity>
                         </View>
@@ -200,7 +200,8 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     habitsContainer: {
-        flex: 3
+        flex: 3,
+        width: Dimensions.get('window').width,
     },
     addHabit: {
         flex: 1,

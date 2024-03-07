@@ -24,17 +24,19 @@ export default function App() {
       case 'Login':
         return <Login setCurrentScreen={setCurrentScreen} />
       case 'Main':
-        return <Main setCurrentScreen={setCurrentScreen}/>
+        return <Main setCurrentScreen={setCurrentScreen} />
       case 'Friends':
-        return <Friends />
-      case 'Habits':
+        return <Friends setCurrentScreen={setCurrentScreen}/>
+      case 'HabitOverview':
+        return <HabitOverview setCurrentScreen={setCurrentScreen} />
+      case 'HabitCreator':
         return <HabitCreator />
       case 'Calendar':
         return <Calendar />
       case 'Settings':
         return <Settings setCurrentScreen={setCurrentScreen} />
       default:
-        return <Text>You have swapped to a non-existent screen.</Text>
+        return <Text style={{color:'red', marginTop: 80}}>You have swapped to a non-existent screen {currentScreen}.</Text>
     }
   };
   return (

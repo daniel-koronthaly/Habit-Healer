@@ -9,19 +9,13 @@ import {
 import { colors } from '../colors/colors'
 import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 
-const SubpageHeader = ({ title, backButtonFunction, rightSideButtonArray }) => {
+const MainpageHeader = ({ title, rightSideButtonArray }) => {
     return (
         <SafeAreaView style={styles.outerContainer}>
             <View style={styles.container}>
                 <View style={styles.left}>
-                    <TouchableOpacity
-                        onPress={backButtonFunction}
-                    >
-                        <Ionicons name={'chevron-back-outline'} size={28} color="white" />
-                    </TouchableOpacity>
                     <View style={styles.textContainer}>
                         <Text style={styles.title}>{title}</Text>
                     </View>
@@ -38,13 +32,14 @@ const SubpageHeader = ({ title, backButtonFunction, rightSideButtonArray }) => {
 
 const styles = StyleSheet.create({
     outerContainer: {
-        width: 330,
+        width: '100%',
         paddingTop: StatusBar.currentHeight || 40,
         paddingBottom: 20,
         marginBottom: 20
     },
     container: {
-        width: '100%',
+        width: 330,
+        paddingLeft: 10,
         paddingTop: 10,
         paddingBottom: 10,
         flexDirection: 'row',
@@ -52,12 +47,13 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         flex: 3,
-        alignItems: 'center',
+        //alignItems: 'center', // this works well for subpageheader but not here
+        paddingLeft: 10, // so this is used instead
         justifyContent: 'center',
     },
     title: {
         color: "white",
-        fontSize: 26,
+        fontSize: 32,
         fontWeight: 'bold',
     },
     left: {
@@ -77,4 +73,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SubpageHeader;
+export default MainpageHeader;

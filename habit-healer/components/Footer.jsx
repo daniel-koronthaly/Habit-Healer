@@ -33,8 +33,8 @@ const Footer = ({ setCurrentScreen, currentScreen }) => {
     />
     <CustomIconButton
       iconName="pie-chart-outline"
-      onPress={() => setCurrentScreen('Habits')}
-      color={getCurrentScreenColor('Habits')}
+      onPress={() => setCurrentScreen('HabitOverview')}
+      color={getCurrentScreenColor('HabitOverview')}
     />
     <CustomIconButton
       iconName="people-outline"

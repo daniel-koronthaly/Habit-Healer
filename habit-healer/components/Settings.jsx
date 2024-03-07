@@ -1,21 +1,23 @@
 import {
     Alert,
+    Dimensions,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
     useColorScheme,
 } from 'react-native';
+import MainpageHeader from './MainpageHeader';
 import { signOut, getAuth, getDatabase, deleteUser, remove, ref, child } from "../firebase/firebaseConfig";
 
 import { colors } from '../colors/colors'
 
 const auth = getAuth();
 
-export default function Settings({setCurrentScreen}) {
+export default function Settings({ setCurrentScreen }) {
     const theme = useColorScheme();
     const uid = auth.currentUser.uid;
-    
+
     const deleteAccount = () => {
         Alert.alert(
             "Do you want to delete this account?",
@@ -72,15 +74,26 @@ export default function Settings({setCurrentScreen}) {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.btnContainer}>
-                <TouchableOpacity style={[styles.signOutBtn, styles.btn]} onPress={() => { signOutUser() }}>
-                    <Text style={styles.btnTxt}>Sign Out</Text>
-                </TouchableOpacity>
+        <View>
+            <>
+                <MainpageHeader
+                    title={"Settings"}
+                    rightSideButtonArray={
+                        [
+                        ]
+                    }
+                />
+            </>
+            <View style={styles.container}>
+                <View style={styles.btnContainer}>
+                    <TouchableOpacity style={[styles.signOutBtn, styles.btn]} onPress={() => { signOutUser() }}>
+                        <Text style={styles.btnTxt}>Sign Out</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.deleteBtn, styles.btn]} onPress={() => { deleteAccount() }}>
-                    <Text style={styles.btnTxt}>Delete Account</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.deleteBtn, styles.btn]} onPress={() => { deleteAccount() }}>
+                        <Text style={styles.btnTxt}>Delete Account</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -88,9 +101,9 @@ export default function Settings({setCurrentScreen}) {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 10,
-        padding: 10,
         flex: 1,
+        padding: 10,
+        width: Dimensions.get('window').width,
     },
     btnContainer: {
         flex: 1,
