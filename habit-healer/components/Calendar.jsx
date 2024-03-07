@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-    Alert,
     TouchableOpacity,
     ActivityIndicator,
     Text,
     TextInput,
+    Dimensions,
     View,
     StyleSheet,
     useColorScheme
@@ -59,8 +59,8 @@ const Calendar = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
-        width: 330,
+        width: Dimensions.get('window').width,
+        padding: 10
     },
     rowContainer: {
         flex: 1,
