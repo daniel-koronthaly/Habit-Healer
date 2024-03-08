@@ -140,50 +140,51 @@ const Main = ({ setCurrentScreen }) => {
                 </TouchableOpacity>
                 <MentalHealthLogModal visible={modalVisible} onClose={closeModal} />
             </View>
-            <View style={{ flex: 1, height: 600 }}>
-                <View style={styles.picker}>
-                    <Swiper
-                        index={1}
-                        ref={swiper}
-                        loop={false}
-                        showsPagination={false}
-                        onIndexChanged={ind => {
-                            if (ind === 1) {
-                                return;
-                            }
-                            setTimeout(() => {
-                                const newIndex = ind - 1;
-                                const newWeek = week + newIndex;
-                                setWeek(newWeek);
-                                setValue(moment(value).add(newIndex, 'week').toDate());
-                                swiper.current.scrollTo(1, false);
-                            }, 100);
-                        }}
-                    >
-                        {weeks.map((dates, index) => (
-                            <View style={[styles.itemRow]} key={index}>
-                                {dates.map((item, dateIndex) => {
-                                    const isActive =
-                                        value.toDateString() === item.date.toDateString();
-                                    return (
-                                        <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
-                                            <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
-                                                <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
-                                                    {item.weekday}
+
+            <View style={styles.picker}>
+                <Swiper
+                    index={1}
+                    ref={swiper}
+                    loop={false}
+                    showsPagination={false}
+                    onIndexChanged={ind => {
+                        if (ind === 1) {
+                            return;
+                        }
+                        setTimeout(() => {
+                            const newIndex = ind - 1;
+                            const newWeek = week + newIndex;
+                            setWeek(newWeek);
+                            setValue(moment(value).add(newIndex, 'week').toDate());
+                            swiper.current.scrollTo(1, false);
+                        }, 100);
+                    }}
+                >
+                    {weeks.map((dates, index) => (
+                        <View style={[styles.itemRow]} key={index}>
+                            {dates.map((item, dateIndex) => {
+                                const isActive =
+                                    value.toDateString() === item.date.toDateString();
+                                return (
+                                    <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
+                                        <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
+                                            <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
+                                                {item.weekday}
+                                            </Text>
+                                            <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
+                                                <Text style={[styles.itemDate, isActive && { color: '#fff' }]}>
+                                                    {item.date.getDate()}
                                                 </Text>
-                                                <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
-                                                    <Text style={[styles.itemDate, isActive && { color: '#fff' }]}>
-                                                        {item.date.getDate()}
-                                                    </Text>
-                                                </View>
                                             </View>
-                                        </TouchableWithoutFeedback>
-                                    );
-                                })}
-                            </View>
-                        ))}
-                    </Swiper>
-                </View>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                );
+                            })}
+                        </View>
+                    ))}
+                </Swiper>
+            </View>
+            <View style={{ flex: 5, height: 600 }}>
                 <View style={styles.filter}>
                     {(memoizedHabits.length > 0 && !loadingHabits) &&
                         <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
@@ -225,13 +226,12 @@ const styles = StyleSheet.create({
     },
     habitsContainer: {
         flex: 4,
-        alignItems: 'flex-start',
         width: Dimensions.get('window').width,
+        // backgroundColor: 'green'
     },
     addHabit: {
         flex: 1,
         marginTop: 80,
-        // justifyContent: 'center',
         alignItems: 'center',
     },
     addHabitText: {
@@ -261,11 +261,10 @@ const styles = StyleSheet.create({
         //color: 'white',
     },
     filter: {
-        flex: 0.7,
+        flex: 1,
         justifyContent: 'center',
     },
     picker: {
-        height: 70,
         flex: 1,
         width: windowWidth,
         flexDirection: 'row',
@@ -275,9 +274,9 @@ const styles = StyleSheet.create({
     itemRow: {
         width: windowWidth,
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 5
+        paddingHorizontal: 10
     },
     item: {
         flex: 1,
