@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
         padding: 10,
         flexDirection: 'row',
         alignItems: 'center',
+        height: 60,
     },
     textContainer: {
         flex: 3,
