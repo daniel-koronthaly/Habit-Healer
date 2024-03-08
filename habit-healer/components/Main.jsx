@@ -128,7 +128,7 @@ const Main = ({ setCurrentScreen }) => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ height: '100%' }}>
             <View style={styles.greetingContainer}>
                 <Text style={[styles.greeting, theme == 'light' ? styles.lightText : styles.darkText]}>
                     Good {timeOfDay} {emoji}
@@ -143,6 +143,7 @@ const Main = ({ setCurrentScreen }) => {
 
             <View style={styles.picker}>
                 <Swiper
+                    style={{height: 'auto'}}
                     index={1}
                     ref={swiper}
                     loop={false}
@@ -184,7 +185,7 @@ const Main = ({ setCurrentScreen }) => {
                     ))}
                 </Swiper>
             </View>
-            <View style={{ flex: 5, height: '100%' }}>
+            <View style={{ flex: 5 }}>
                 <View style={styles.filter}>
                     {(memoizedHabits.length > 0 && !loadingHabits) &&
                         <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
@@ -263,11 +264,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     picker: {
-        flex: 1,
+        height: 80,
         width: windowWidth,
         flexDirection: 'row',
         alignItems: 'center',
-        // backgroundColor: 'yellow'
     },
     itemRow: {
         width: windowWidth,

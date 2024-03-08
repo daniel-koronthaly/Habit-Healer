@@ -49,6 +49,7 @@ const SubList = ({ habits, setCurrentScreen }) => {
             data={habits}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderItem}
+            scrollEnabled={false}
         />
     );
 }
@@ -143,6 +144,7 @@ const HabitList = ({ habits, setCurrentScreen }) => {
             sections={sections}
             renderItem={(renderItem)}
             renderSectionHeader={renderSectionHeader}
+            stickySectionHeadersEnabled={false}
             keyExtractor={(item, index) => index.toString()}
             extraData={expandedSections}
             renderSectionFooter={({ section }) => (
