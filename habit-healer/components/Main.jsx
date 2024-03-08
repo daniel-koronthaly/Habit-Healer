@@ -216,11 +216,11 @@ const styles = StyleSheet.create({
     },
     loadingContainerHorizontal: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
         padding: 10,
     },
     habitsContainer: {
-        flex: 3,
+        flex: 1,
         width: Dimensions.get('window').width,
     },
     addHabit: {
@@ -256,10 +256,10 @@ const styles = StyleSheet.create({
         //color: 'white',
     },
     picker: {
-        flex: 1,
         width: windowWidth,
         flexDirection: 'row',
         alignItems: 'center',
+        // backgroundColor: 'yellow'
     },
     itemRow: {
         width: windowWidth,

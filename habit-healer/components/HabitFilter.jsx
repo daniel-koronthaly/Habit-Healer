@@ -43,15 +43,14 @@ const HabitFilter = ({ habitList, selectedCategory, setSelectedCategory }) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: 60,
         paddingVertical: 10,
         paddingHorizontal: 20,
         justifyContent: 'center',
+        // backgroundColor: 'green'
     },
     rowContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        
     },
     left: {
         flexDirection: 'row',
