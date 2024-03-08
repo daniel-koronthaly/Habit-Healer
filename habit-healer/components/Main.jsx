@@ -140,72 +140,76 @@ const Main = ({ setCurrentScreen }) => {
                 </TouchableOpacity>
                 <MentalHealthLogModal visible={modalVisible} onClose={closeModal} />
             </View>
-            <View style={styles.picker}>
-                <Swiper
-                    index={1}
-                    ref={swiper}
-                    loop={false}
-                    showsPagination={false}
-                    onIndexChanged={ind => {
-                        if (ind === 1) {
-                            return;
-                        }
-                        setTimeout(() => {
-                            const newIndex = ind - 1;
-                            const newWeek = week + newIndex;
-                            setWeek(newWeek);
-                            setValue(moment(value).add(newIndex, 'week').toDate());
-                            swiper.current.scrollTo(1, false);
-                        }, 100);
-                    }}
-                >
-                    {weeks.map((dates, index) => (
-                        <View style={[styles.itemRow]} key={index}>
-                            {dates.map((item, dateIndex) => {
-                                const isActive =
-                                    value.toDateString() === item.date.toDateString();
-                                return (
-                                    <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
-                                        <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
-                                            <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
-                                                {item.weekday}
-                                            </Text>
-                                            <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
-                                                <Text style={[styles.itemDate, isActive && { color: '#fff' }]}>
-                                                    {item.date.getDate()}
+            <View style={{ flex: 1, height: 600 }}>
+                <View style={styles.picker}>
+                    <Swiper
+                        index={1}
+                        ref={swiper}
+                        loop={false}
+                        showsPagination={false}
+                        onIndexChanged={ind => {
+                            if (ind === 1) {
+                                return;
+                            }
+                            setTimeout(() => {
+                                const newIndex = ind - 1;
+                                const newWeek = week + newIndex;
+                                setWeek(newWeek);
+                                setValue(moment(value).add(newIndex, 'week').toDate());
+                                swiper.current.scrollTo(1, false);
+                            }, 100);
+                        }}
+                    >
+                        {weeks.map((dates, index) => (
+                            <View style={[styles.itemRow]} key={index}>
+                                {dates.map((item, dateIndex) => {
+                                    const isActive =
+                                        value.toDateString() === item.date.toDateString();
+                                    return (
+                                        <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
+                                            <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
+                                                <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
+                                                    {item.weekday}
                                                 </Text>
+                                                <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
+                                                    <Text style={[styles.itemDate, isActive && { color: '#fff' }]}>
+                                                        {item.date.getDate()}
+                                                    </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                );
-                            })}
-                        </View>
-                    ))}
-                </Swiper>
-            </View>
-            {(memoizedHabits.length > 0 && !loadingHabits) &&
-                <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
-            }
-            <View style={styles.habitsContainer}>
-                {loadingHabits ? (
-                    // Render a loading indicator or temporary screen while waiting for data
-                    <View style={[styles.loadingContainer, styles.loadingContainerHorizontal]}>
-                        <ActivityIndicator size="large" color={colors.headerColor} />
-                    </View>
-                ) : (
-                    memoizedHabits.length === 0 ? (
-                        <View style={styles.addHabit}>
-                            <Text style={[styles.addHabitText, theme == 'light' ? styles.lightText : styles.darkText]}>Add your first habit to get started!</Text>
-                            <TouchableOpacity style={styles.addHabitButton} onPress={() => { setCurrentScreen('HabitCreator'); }}>
-                                <Text style={styles.addHabitText}>Add Habit</Text>
-                            </TouchableOpacity>
+                                        </TouchableWithoutFeedback>
+                                    );
+                                })}
+                            </View>
+                        ))}
+                    </Swiper>
+                </View>
+                <View style={styles.filter}>
+                    {(memoizedHabits.length > 0 && !loadingHabits) &&
+                        <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+                    }
+                </View>
+                <View style={styles.habitsContainer}>
+                    {loadingHabits ? (
+                        // Render a loading indicator or temporary screen while waiting for data
+                        <View style={[styles.loadingContainer, styles.loadingContainerHorizontal]}>
+                            <ActivityIndicator size="large" color={colors.headerColor} />
                         </View>
                     ) : (
-                        <View style={styles.loadingContainerHorizontal}>
-                            <HabitList habits={filteredHabits} currentDate={currentDate}></HabitList>
-                        </View>
-                    )
-                )}
+                        memoizedHabits.length === 0 ? (
+                            <View style={styles.addHabit}>
+                                <Text style={[styles.addHabitText, theme == 'light' ? styles.lightText : styles.darkText]}>Add your first habit to get started!</Text>
+                                <TouchableOpacity style={styles.addHabitButton} onPress={() => { setCurrentScreen('HabitCreator'); }}>
+                                    <Text style={styles.addHabitText}>Add Habit</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <View style={styles.loadingContainerHorizontal}>
+                                <HabitList habits={filteredHabits} currentDate={currentDate}></HabitList>
+                            </View>
+                        )
+                    )}
+                </View>
             </View>
         </SafeAreaView>)
 }
@@ -220,7 +224,8 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     habitsContainer: {
-        flex: 1,
+        flex: 4,
+        alignItems: 'flex-start',
         width: Dimensions.get('window').width,
     },
     addHabit: {
@@ -255,7 +260,13 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         //color: 'white',
     },
+    filter: {
+        flex: 0.7,
+        justifyContent: 'center',
+    },
     picker: {
+        height: 70,
+        flex: 1,
         width: windowWidth,
         flexDirection: 'row',
         alignItems: 'center',
