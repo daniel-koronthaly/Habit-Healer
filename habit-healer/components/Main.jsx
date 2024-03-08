@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     TouchableOpacity,
     useColorScheme,
+    Pressable,
 } from 'react-native'
 import Swiper from 'react-native-swiper';
 import moment from 'moment';
@@ -17,6 +18,7 @@ import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebase
 import { colors } from '../colors/colors';
 import HabitList from './HabitList';
 import HabitFilter from './HabitFilter';
+import MentalHealthLogModal from './MentalHealthModal';
 
 const windowWidth = Dimensions.get('window').width;
 const Main = ({ setCurrentScreen }) => {
@@ -36,6 +38,8 @@ const Main = ({ setCurrentScreen }) => {
     const auth = getAuth();
 
     const theme = useColorScheme();
+
+    const [modalVisible, setModalVisible] = useState(false);
 
     // Generate the weeks array based on the current week
     const weeks = React.useMemo(() => {
@@ -115,12 +119,26 @@ const Main = ({ setCurrentScreen }) => {
         emoji = '🌙';
     }
 
+    const logMentalHealth = () => {
+        setModalVisible(true);
+    }
+
+    const closeModal = () => {
+        setModalVisible(false);
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.greetingContainer}>
                 <Text style={[styles.greeting, theme == 'light' ? styles.lightText : styles.darkText]}>
                     Good {timeOfDay} {emoji}
                 </Text>
+                <TouchableOpacity onPress={logMentalHealth}>
+                    <Text style={styles.logButton}>
+                        Mental Health
+                    </Text>
+                </TouchableOpacity>
+                <MentalHealthLogModal visible={modalVisible} onClose={closeModal} />
             </View>
             <View style={styles.picker}>
                 <Swiper
@@ -228,7 +246,9 @@ const styles = StyleSheet.create({
     },
     greetingContainer: {
         paddingHorizontal: 20,
-        marginVertical: 20
+        marginVertical: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     greeting: {
         fontSize: 24,
@@ -287,6 +307,13 @@ const styles = StyleSheet.create({
     },
     darkText: {
         color: colors.darkTextColor
+    },
+    logButton: {
+        color: colors.headerColor,
+        fontSize: 15,
+        fontWeight: '600',
+        marginLeft: 10,
+        marginTop: 5
     }
 });
 
