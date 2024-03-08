@@ -184,7 +184,7 @@ const Main = ({ setCurrentScreen }) => {
                     ))}
                 </Swiper>
             </View>
-            <View style={{ flex: 5, height: 600 }}>
+            <View style={{ flex: 5, height: '100%' }}>
                 <View style={styles.filter}>
                     {(memoizedHabits.length > 0 && !loadingHabits) &&
                         <HabitFilter habitList={memoizedHabits} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
@@ -225,12 +225,11 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     habitsContainer: {
-        flex: 4,
+        flex: 1,
         width: Dimensions.get('window').width,
         // backgroundColor: 'green'
     },
     addHabit: {
-        flex: 1,
         marginTop: 80,
         alignItems: 'center',
     },
@@ -261,7 +260,6 @@ const styles = StyleSheet.create({
         //color: 'white',
     },
     filter: {
-        flex: 1,
         justifyContent: 'center',
     },
     picker: {
