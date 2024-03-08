@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     loadingContainerHorizontal: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        padding: 10,
+        paddingHorizontal: 10,
     },
     habitsContainer: {
         flex: 3,

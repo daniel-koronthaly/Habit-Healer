@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingTop: StatusBar.currentHeight || 40,
         paddingBottom: 20,
-        marginBottom: 20,
     },
     container: {
         width: '100%',
