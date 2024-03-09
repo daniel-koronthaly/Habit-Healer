@@ -1,54 +1,50 @@
-import {
-    Text,
-    View,
-    TouchableOpacity,
-    StyleSheet,
-    useColorScheme,
-    Dimensions
-} from 'react-native'
-import MainpageHeader from './MainpageHeader'
+import React from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, useColorScheme, Dimensions } from 'react-native';
+import { getAuth } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
+import NotificationsFeed from './NotificationsFeed';
+import MainpageHeader from './MainpageHeader';
 
+const auth = getAuth();
 
+// Accept setCurrentScreen as a prop here
 const Friends = ({ setCurrentScreen }) => {
+    const theme = useColorScheme(); // Detects the current theme (light or dark)
 
-    const theme = useColorScheme();
+    // Selects background color based on the theme
+    const backgroundColor = theme === 'light' ? colors.lightBackgroundColor : colors.darkBackgroundColor;
+
+    const dynamicStyles = StyleSheet.create({
+        container: {
+            flex: 1,
+            paddingTop: 10,
+            width: Dimensions.get('window').width,
+            backgroundColor: backgroundColor, // Applies the dynamic background color
+        },
+        // Define topRightButtonText style to be used below
+        topRightButtonText: {
+            color: colors.headerColor, // Example color, adjust as necessary
+            // Add other styling for your topRightButtonText here
+        },
+        // Any other dynamic styles based on the theme can be defined here
+    });
+
     return (
-        <View>
-            <>
-                <MainpageHeader
-                    title={"Friends"}
-                    rightSideButtonArray={
-                        [
-                            <TouchableOpacity onPress={() => { setCurrentScreen("FriendsOverview"); }}>
-                                <Text style={[styles.topRightButtonText, { color: colors.headerColor }]}>View Friends</Text>
-                            </TouchableOpacity>,
-                        ]
-                    }
-                />
-            </>
-            <View style={styles.container}>
-                <Text style={{color: 'white'}}>Hello</Text>
-            </View>
-        </View>)
-}
+        <View style={dynamicStyles.container}>
+            <MainpageHeader
+                title={"Friends"}
+                rightSideButtonArray={
+                    [
+                        // Use setCurrentScreen function here as intended
+                        <TouchableOpacity onPress={() => { setCurrentScreen("ViewFriends"); }}>
+                            <Text style={dynamicStyles.topRightButtonText}>View Friends</Text>
+                        </TouchableOpacity>,
+                    ]
+                }
+            />
+            <NotificationsFeed />
+        </View>
+    );
+};
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        width: Dimensions.get('window').width,
-    },
-    topRightButtonText: {
-        fontWeight: '700',
-        fontSize: 18,
-        //color: 'white'
-    },
-    lightText: {
-        color: colors.lightTextColor
-    },
-    darkText: {
-        color: colors.darkTextColor
-    }
-})
-export default Friends
+export default Friends;

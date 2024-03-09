@@ -11,6 +11,8 @@ import Login from './components/Login'
 import Settings from './components/Settings'
 import Main from './components/Main'
 import Friends from './components/Friends';
+import AddFriends from './components/AddFriends';
+import ViewFriends from './components/ViewFriends';
 import HabitOverview from './components/HabitOverview';
 import Calendar from './components/Calendar';
 import HabitCreator from './components/HabitCreator';
@@ -27,6 +29,10 @@ export default function App() {
         return <Main setCurrentScreen={setCurrentScreen} />
       case 'Friends':
         return <Friends setCurrentScreen={setCurrentScreen}/>
+      case 'AddFriends':
+        return <AddFriends setCurrentScreen={setCurrentScreen}/>
+      case 'ViewFriends':
+        return <ViewFriends setCurrentScreen={setCurrentScreen}/>
       case 'HabitOverview':
         return <HabitOverview setCurrentScreen={setCurrentScreen} />
       case 'HabitCreator':
