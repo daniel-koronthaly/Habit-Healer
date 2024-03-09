@@ -22,34 +22,34 @@ const Footer = ({ setCurrentScreen, currentScreen }) => {
       <Ionicons name={iconName} size={24} color="white" />
     </TouchableOpacity>
   )
-  const getCurrentScreenColor = (screen) => {
-    return currentScreen === screen ? colors.headerColor : "";
+  const getCurrentScreenColor = (screens) => {
+    return screens.includes(currentScreen) ? colors.headerColor : "";
   }
   return (<View style={styles.container}>
     <CustomIconButton
       iconName="ios-home"
       onPress={() => setCurrentScreen('Main')}
-      color={getCurrentScreenColor('Main')}
+      color={getCurrentScreenColor(['Main'])}
     />
     <CustomIconButton
       iconName="pie-chart-outline"
       onPress={() => setCurrentScreen('HabitOverview')}
-      color={getCurrentScreenColor('HabitOverview')}
+      color={getCurrentScreenColor(['HabitOverview'])}
     />
     <CustomIconButton
       iconName="people-outline"
       onPress={() => setCurrentScreen('Friends')}
-      color={getCurrentScreenColor('Friends')}
+      color={getCurrentScreenColor(['Friends', 'AddFriends', 'ViewFriends'])}
     />
     <CustomIconButton
       iconName="calendar"
       onPress={() => setCurrentScreen('Calendar')}
-      color={getCurrentScreenColor('Calendar')}
+      color={getCurrentScreenColor(['Calendar'])}
     />
     <CustomIconButton
       iconName="settings"
       onPress={() => setCurrentScreen('Settings')}
-      color={getCurrentScreenColor('Settings')}
+      color={getCurrentScreenColor(['Settings'])}
     />
   </View>)
 }
