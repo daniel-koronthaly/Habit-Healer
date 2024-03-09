@@ -16,16 +16,42 @@ const auth = getAuth();
 
 const Friends = () => {
     const theme = useColorScheme();
-
-    // Dynamically adjust styles based on theme
+    // Assuming a similar approach to handling dark/light mode as in the provided example
     const dynamicStyles = StyleSheet.create({
         container: {
             flex: 1,
             paddingTop: 10,
             width: Dimensions.get('window').width,
-            backgroundColor: theme === 'light' ? '#FFF' : '#333', // Adjust based on theme
+            backgroundColor: theme === 'light' ? '#FFF' : '#333',
         },
-        // Other styles can remain static or be adjusted dynamically as well
+        // Adapted styles for text, buttons, etc., to match HabitList's style
+        textStyle: {
+            fontSize: 20,
+            fontWeight: '600',
+            color: theme === 'light' ? 'black' : 'white', // Adjusting color based on theme
+        },
+        subtitleStyle: {
+            fontSize: 14,
+            fontWeight: '400',
+            color: 'gray',
+        },
+        // Example button style based on HabitList's button styling
+        buttonStyle: {
+            height: 40,
+            width: 55,
+            borderWidth: 1,
+            borderRadius: 20,
+            borderColor: 'gray',
+            marginLeft: 6,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: theme === 'light' ? '#FFF' : '#333', // Adjusting background based on theme
+        },
+        buttonText: {
+            fontSize: 16,
+            color: 'white',
+        },
+        // Add other styles as needed
     });
 
     return (
@@ -39,5 +65,4 @@ const Friends = () => {
         </View>
     );
 };
-
 export default Friends;
