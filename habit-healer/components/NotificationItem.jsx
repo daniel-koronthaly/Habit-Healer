@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Ensure you have expo installed or replace with another icon library
+import { Ionicons } from '@expo/vector-icons'; // Using Ionicons for icons
 
 const NotificationItem = ({ notification }) => {
     const { friendName, habitName, type } = notification;
@@ -12,14 +12,13 @@ const NotificationItem = ({ notification }) => {
                 {`${friendName} ${isCompleted ? 'completed' : 'is late for'} ${habitName}`}
             </Text>
             <View style={styles.right}>
-                {isCompleted && (
+                {isCompleted ? (
                     <TouchableOpacity style={styles.button}>
-                        <Text style={styles.buttonText}>Hi Five!</Text>
+                        <Ionicons name="hand-right" size={24} color="white" />
                     </TouchableOpacity>
-                )}
-                {!isCompleted && (
+                ) : (
                     <TouchableOpacity style={styles.button}>
-                        <Ionicons name={'time-outline'} size={20} color="white" />
+                        <Ionicons name="time-outline" size={24} color="white" />
                     </TouchableOpacity>
                 )}
             </View>
@@ -61,11 +60,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-    },
-    // Adjust or add more styles as needed
 });
 
 export default NotificationItem;
