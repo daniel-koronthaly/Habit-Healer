@@ -13,12 +13,13 @@ import SubpageHeader from './SubpageHeader';
 import { Ionicons } from '@expo/vector-icons';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
+import {Calendar as ICalendar, CalendarList as ICalendarList, Agenda as IAgenda} from 'react-native-calendars';
 
 const Calendar = () => {
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const yearInitial = new Date().toLocaleString('en-US', { year: 'numeric', timeZone: userTimezone });
-    const [year, setYear] = useState(yearInitial)
-
+    const [year, setYear] = useState(yearInitial);
+    const [selected, setSelected] = useState('');
 
     const theme = useColorScheme();
 
@@ -50,7 +51,28 @@ const Calendar = () => {
                 />
             </>
             <View style={styles.container}>
-                <Text style={{ color: 'white' }}>Hello</Text>
+                <ICalendar
+                    theme = {{
+                        textDayHeaderFontWeight: '500',
+                        textDayHeaderFontSize: 15,
+                        textDayFontWeight: '500',
+                        textDayFontSize: 15,
+                        textMonthFontWeight: '500',
+                        textMonthFontSize: 20,
+                        backgroundColor: colors.darkBackgroundColor,
+                        calendarBackground: colors.darkBackgroundColor,
+                        textSectionTitleColor: '#b6c1cd',
+                        // selectedDayBackgroundColor: '#00adf5',
+                        // selectedDayTextColor: '#ffffff',
+                        todayTextColor: '#00adf5',
+                        dayTextColor: '#d9e1e8',
+                        textDisabledColor: '#2d4150',
+                    }}
+                    onDayPress={(day) => {setSelected(day.dateString)}}
+                    markedDates={{
+                        [selected]: {selected: true}
+                    }}
+                />
             </View>
         </View>
     )
