@@ -102,14 +102,14 @@ export default function Settings({ setCurrentScreen }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+
         padding: 10,
-        width: Dimensions.get('window').width,
+        width: Dimensions.get('window').width
     },
     btnContainer: {
         flex: 1,
-        justifyContent: 'flex-end',
         alignItems: 'center',
-        paddingBottom: 40
+        paddingBottom: 40,
     },
     btn: {
         backgroundColor: '#333',
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         borderRadius: 10,
     },
     btnTxt: {
