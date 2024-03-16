@@ -78,8 +78,4 @@ const NotificationsFeed = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  // Add styles for the feed container if needed
-});
-
 export default NotificationsFeed;
