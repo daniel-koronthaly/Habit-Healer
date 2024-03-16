@@ -16,9 +16,11 @@ import ViewFriends from './components/ViewFriends';
 import HabitOverview from './components/HabitOverview';
 import Calendar from './components/Calendar';
 import HabitCreator from './components/HabitCreator';
+import EditHabit from './components/EditHabit';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Login');
+  const [selectedHabit, setSelectedHabit] = useState(null);
   const theme = useColorScheme();
 
   const renderScreen = () => {
@@ -34,11 +36,13 @@ export default function App() {
       case 'ViewFriends':
         return <ViewFriends setCurrentScreen={setCurrentScreen}/>
       case 'HabitOverview':
-        return <HabitOverview setCurrentScreen={setCurrentScreen} />
+        return <HabitOverview setCurrentScreen={setCurrentScreen} setSelectedHabit={setSelectedHabit} />
       case 'HabitCreator':
-        return <HabitCreator />
+        return <HabitCreator setCurrentScreen={setCurrentScreen}/>
       case 'Calendar':
         return <Calendar />
+      case 'EditHabit':
+        return <EditHabit selectedHabit={selectedHabit} setCurrentScreen={setCurrentScreen}/>
       case 'Settings':
         return <Settings setCurrentScreen={setCurrentScreen} />
       default:

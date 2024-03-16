@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const auth = getAuth();
 
-const HabitList = ({ habits, currentDate }) => {
+const HabitList = ({ habits, currentDate, colorList }) => {
 
     const [sortedHabits, setSortedHabits] = useState([...habits].sort(sortHabits));
 
@@ -33,7 +33,7 @@ const HabitList = ({ habits, currentDate }) => {
     function sortHabits(a, b) {
         const hasDatesCompletedA = "datesCompleted" in a.habit
         const hasDatesCompletedB = "datesCompleted" in b.habit
-        
+
         if (hasDatesCompletedA !== hasDatesCompletedB) {
             return hasDatesCompletedA - hasDatesCompletedB
         }
@@ -146,6 +146,7 @@ const HabitList = ({ habits, currentDate }) => {
         const isDone = hasDatesCompleted && dateMatch !== undefined && dateMatch.completed
         return (
             <View style={styles.listItem}>
+                <View style={styles.colorStrip} backgroundColor={!dateMatch ? colorList[item.category] : 'gray'} />
                 <View style={styles.left}>
                     <Text style={!dateMatch ? styles.habitText : styles.habitTextCompleted}>{item.habitName}</Text>
                     <Text style={!dateMatch ? styles.habitSubtitleText : styles.habitSubtitleTextCompleted}>
@@ -199,6 +200,13 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         flex: 1,
     },
+    colorStrip: {
+        width: 3,
+        height: 40,
+        marginRight: 20,
+        borderRadius: 5,
+        backgroundColor: 'red'
+    },
     listItem: {
         backgroundColor: '#333',
         marginBottom: 10,
@@ -206,7 +214,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingTop: 10,
         paddingBottom: 10,
-        paddingHorizontal: 20,
+        paddingRight: 20,
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 10

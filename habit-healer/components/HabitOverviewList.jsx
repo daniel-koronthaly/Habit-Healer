@@ -6,11 +6,12 @@ import { Ionicons } from '@expo/vector-icons';
 const auth = getAuth();
 
 
-const SubList = ({ habits, setCurrentScreen }) => {
+const SubList = ({ habits, setCurrentScreen, setSelectedHabit, colorList }) => {
     const renderItem = ({ item, index }) => {
         const days = ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa']
         return (
             <View style={styles.listItem}>
+                <View style={styles.colorStrip} backgroundColor={colorList[item.category]} />
                 <View style={styles.left}>
                     <Text style={styles.habitText}>{item.habitName}</Text>
                     <View style={{ flexDirection: 'row' }}>
@@ -32,7 +33,7 @@ const SubList = ({ habits, setCurrentScreen }) => {
                     </View>
                 </View>
                 <View style={styles.right}>
-                    <TouchableOpacity style={styles.button} onPress={() => { setCurrentScreen('EditHabit') }}>
+                    <TouchableOpacity style={styles.button} onPress={() => { setSelectedHabit(item); setCurrentScreen('EditHabit');  }}>
                         <Ionicons name={'pencil-outline'} size={20} color="white" />
                     </TouchableOpacity>
 
@@ -54,7 +55,7 @@ const SubList = ({ habits, setCurrentScreen }) => {
     );
 }
 
-const HabitList = ({ habits, setCurrentScreen }) => {
+const HabitList = ({ habits, setCurrentScreen, setSelectedHabit, colorList }) => {
 
     const [expandedSections, setExpandedSections] = useState([]);
 
@@ -149,7 +150,7 @@ const HabitList = ({ habits, setCurrentScreen }) => {
             extraData={expandedSections}
             renderSectionFooter={({ section }) => (
                 expandedSections.includes(section.index) && (
-                    <SubList habits={section.data} setCurrentScreen={setCurrentScreen} />
+                    <SubList habits={section.data} setCurrentScreen={setCurrentScreen} setSelectedHabit={setSelectedHabit} colorList={colorList} />
                 )
             )}
         />
@@ -175,6 +176,13 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         flex: 1,
     },
+    colorStrip: {
+        width: 3,
+        height: 40,
+        marginRight: 20,
+        borderRadius: 5,
+        backgroundColor: 'red'
+    },
     listItem: {
         backgroundColor: '#333',
         marginBottom: 10,
@@ -182,7 +190,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingTop: 10,
         paddingBottom: 10,
-        paddingHorizontal: 20,
+        paddingRight: 20,
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 10

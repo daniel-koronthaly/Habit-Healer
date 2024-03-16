@@ -11,7 +11,7 @@
 
 ## Description
 
-Mobile applciation intended to investigate how to improve your mental health based off of forming and maintaining habits.
+Mobile application intended to investigate how to improve your mental health based off of forming and maintaining habits.
 ## Installation
 
 **Clone the repository on your local machine:**
