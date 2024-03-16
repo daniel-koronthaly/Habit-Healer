@@ -184,6 +184,7 @@ const Calendar = () => {
                 </View>
             ) : (
                 <ICalendar
+                    enableSwipeMonths={true}
                     hideExtraDays={true}
                     dayComponent={({ date, state }) => {
                         const isToday = moment(date.dateString).isSame(moment(), 'day');
