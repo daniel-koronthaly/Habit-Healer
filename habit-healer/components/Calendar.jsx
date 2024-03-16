@@ -64,6 +64,18 @@ const Calendar = () => {
         return completed
     }
 
+    function thisHabitCompletedToday(habit, date) {
+        if (habit.habit.datesCompleted) {
+            const mom = moment(date.dateString)
+            for (let i = 0; i < habit.habit.datesCompleted.length; i++) {
+                if (mom.dayOfYear() === moment(habit.habit.datesCompleted[i].date, 'MM/DD/YYYY').dayOfYear()) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     function makeHabitStrokes(date) {
         if (loadingHabits) {
             return null
@@ -83,13 +95,9 @@ const Calendar = () => {
         }
 
         return paths.map((path, index) => {
-            if (index < completed.length) {
-                console.log("completed habit", completed[index].habitName)
-                console.log("color is", usedColors[completed[index].category])
-            }
             return (
                 <Path key={index} path={path} color="transparent">
-                    <Paint style="stroke" strokeWidth={dayViewStrokeWidth} strokeCap="round" color={index < completed.length ? isToday ? "white" : usedColors[completed[index].category] : "#404040" } />
+                    <Paint style="stroke" strokeWidth={dayViewStrokeWidth} strokeCap="round" color={thisHabitCompletedToday(habitsToday[index], date) ? isToday ? "white" : usedColors[habitsToday[index].category] : "#404040" } />
                 </Path>
             )
         })
