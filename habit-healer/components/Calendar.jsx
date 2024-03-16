@@ -24,6 +24,7 @@ const Calendar = () => {
     const [selected, setSelected] = useState('');
     const [loadingHabits, setLoadingHabits] = useState(true);
     const [habits, setHabits] = useState([])
+    const [usedColors, setUsedColors] = useState({});
 
     const theme = useColorScheme();
     const auth = getAuth();
@@ -35,10 +36,43 @@ const Calendar = () => {
     const dayViewStrokeWidth = 3;
     const arcPaddingDeg = 20;
 
-    function createHabitPaths(date) {
-        const dayOfWeek = parseInt(moment(date.dateString).format('d'));
-        const habitsToday = getHabitsToday(dayOfWeek);
+    function getHabitsToday(date) {
+        const weekdayIdx = (parseInt(moment(date.dateString).format('d')) + 1);
+        const habitsToday = [];
+        habits.forEach(habit => {
+            for (let i = 0; i < habit.habit.weekdays.length; i++) {
+                if (weekdayIdx === habit.habit.weekdays[i]) {
+                    habitsToday.push(habit);
+                }
+            }
+        });
+        return habitsToday;
+    }
+
+    function getHabitsCompleted(date) {
+        const completed = []
+        const mom = moment(date.dateString)
+        habits.forEach(habit => {
+            if (habit.habit.datesCompleted) {
+                for (let i = 0; i < habit.habit.datesCompleted.length; i++) {
+                    if (mom.dayOfYear() === moment(habit.habit.datesCompleted[i].date, 'MM/DD/YYYY').dayOfYear()) {
+                        completed.push(habit)
+                    }
+                }
+            }
+        })
+        return completed
+    }
+
+    function makeHabitStrokes(date) {
+        if (loadingHabits) {
+            return null
+        }
+
+        const habitsToday = getHabitsToday(date);
+        const completed = getHabitsCompleted(date);
         const numHabits = habitsToday.length;
+        const isToday = moment(date.dateString).isSame(moment(), 'day');
 
         const paths = [];
         for (let i = 0; i < numHabits; i++) {
@@ -47,32 +81,18 @@ const Calendar = () => {
             path.addArc({ x: (dayViewWidth - arcWidth) / 2, y: (dayViewHeight - arcHeight) / 2, width: arcWidth, height: arcHeight }, -275 + arcLength * i, arcLength - arcPaddingDeg);
             paths.push(path);
         }
-        return paths;
-    }
 
-    function getHabitsToday(weekdayIdx) {
-        const habitsToday = [];
-        habits.forEach(habit => {
-            if (weekdayIdx in habit.habit.weekdays) {
-                habitsToday.push(habit);
+        return paths.map((path, index) => {
+            if (index < completed.length) {
+                console.log("completed habit", completed[index].habitName)
+                console.log("color is", usedColors[completed[index].category])
             }
-        });
-        return habitsToday;
-    }
-
-    function getNumHabitsCompletedToday(date) {
-        let n = 0
-        const mom = moment(date)
-        habits.forEach(habit => {
-            if (habit.habit.datesCompleted) {
-                for (let i = 0; i < habit.habit.datesCompleted.length; i++) {
-                    if (mom.dayOfYear() === moment(habit.habit.datesCompleted[i].date, 'MM/DD/YYYY').dayOfYear()) {
-                        n++
-                    }
-                }
-            }
+            return (
+                <Path key={index} path={path} color="transparent">
+                    <Paint style="stroke" strokeWidth={dayViewStrokeWidth} strokeCap="round" color={index < completed.length ? isToday ? "white" : usedColors[completed[index].category] : "#404040" } />
+                </Path>
+            )
         })
-        return n
     }
 
     function cancel() {
@@ -87,8 +107,10 @@ const Calendar = () => {
                 if (snapshot.exists()) {
                     const categories = snapshot.val()
                     const newHabits = [];
+                    const colorList = {}
                     Object.keys(categories).forEach(category => {
-                        const habits = categories[category];
+                        colorList[category] = categories[category].color
+                        const habits = categories[category].habitList;
                         Object.keys(habits).forEach(habitName => {
                             const habit = habits[habitName];
                             const newHabit = {
@@ -102,6 +124,7 @@ const Calendar = () => {
                         })
                     })
                     setHabits(newHabits);
+                    setUsedColors(colorList);
                 } else {
                     console.log("no habits found")
                 }
@@ -140,23 +163,20 @@ const Calendar = () => {
                 />
             </>
             <View style={styles.container}>
+            {loadingHabits ? (
+                <View style={[styles.loadingContainer, styles.loadingContainerHorizontal]}>
+                    <ActivityIndicator size="large" color={colors.headerColor} />
+                </View>
+            ) : (
                 <ICalendar
                     hideExtraDays={true}
                     dayComponent={({ date, state }) => {
                         const isToday = moment(date.dateString).isSame(moment(), 'day');
-                        const isAfterToday = moment(date.dateString).isAfter(moment(), 'day');
-                        const numHabitsCompleted = getNumHabitsCompletedToday(date.dateString);
                         return (
                             <View style={{ position: 'relative', width: dayViewWidth, height: dayViewWidth, justifyContent: 'center', alignItems: 'center' }}>
                                 <Canvas style={{ width: dayViewWidth, height: dayViewWidth }}>
-                                    {isToday ? <Circle key={date} cx={dayViewWidth / 2} cy={dayViewHeight / 2} r={dayViewWidth / 3} color="white" /> : null }
-                                    {loadingHabits ? null : createHabitPaths(date).map((path, index) => {
-                                        return (
-                                            <Path key={index} path={path} color="transparent">
-                                                <Paint style="stroke" strokeWidth={dayViewStrokeWidth} strokeCap="round" color={index + 1 > numHabitsCompleted ? "#404040" : isToday ? "white" : "#0075FF"} />
-                                            </Path>
-                                        )
-                                    })}
+                                    {isToday ? <Circle key={date} cx={dayViewWidth / 2} cy={dayViewHeight / 2} r={dayViewWidth / 3} color="white" /> : null}
+                                    {makeHabitStrokes(date)}
                                 </Canvas>
                                 <Text style={{ position: 'absolute', color: isToday ? 'blue' : state === 'disabled' ? 'gray' : 'white' }}>{date.day}</Text>
                             </View>
@@ -182,12 +202,22 @@ const Calendar = () => {
                         [selected]: { selected: true }
                     }}
                 />
+            )}
             </View>
         </View>
     )
 };
 
 const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    loadingContainerHorizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingHorizontal: 10,
+    },
     container: {
         flex: 1,
         width: Dimensions.get('window').width,

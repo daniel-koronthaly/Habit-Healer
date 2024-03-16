@@ -71,18 +71,18 @@ const HabitList = ({ habits, currentDate, colorList }) => {
 
         if (!item.habit.datesCompleted) {
             item.habit.datesCompleted = [dateEntry]
-            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
         }
         else {
             const existingDateEntry = item.habit.datesCompleted.find(entry => entry.date === dateEntry.date);
             if (!existingDateEntry) {
                 item.habit.datesCompleted.push(dateEntry)
                 item.habit.datesCompleted.sort((a, b) => sortByDate(a, b))
-                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
             }
             else if (!existingDateEntry.completed) {
                 existingDateEntry.completed = true;
-                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
             }
         }
 
@@ -101,18 +101,18 @@ const HabitList = ({ habits, currentDate, colorList }) => {
 
         if (!item.habit.datesCompleted) {
             item.habit.datesCompleted = [dateEntry]
-            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
         }
         else {
             const existingDateEntry = item.habit.datesCompleted.find(entry => entry.date === dateEntry.date);
             if (!existingDateEntry) {
                 item.habit.datesCompleted.push(dateEntry)
                 item.habit.datesCompleted.sort((a, b) => sortByDate(a, b))
-                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
             }
             else if (existingDateEntry.completed) {
                 existingDateEntry.completed = false;
-                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
             }
         }
         const modifiedHabits = sortedHabits.map((originalItem) =>
