@@ -65,6 +65,7 @@ const Calendar = () => {
     }
 
     function thisHabitCompletedToday(habit, date) {
+        if (habit == null) return false
         if (habit.habit.datesCompleted) {
             const mom = moment(date.dateString)
             for (let i = 0; i < habit.habit.datesCompleted.length; i++) {
@@ -94,10 +95,16 @@ const Calendar = () => {
             paths.push(path);
         }
 
+        if (numHabits == 0) {
+            const path = Skia.Path.Make();
+            path.addArc({ x: (dayViewWidth - arcWidth) / 2, y: (dayViewHeight - arcHeight) / 2, width: arcWidth, height: arcHeight }, 0, 360);
+            paths.push(path);
+        }
+
         return paths.map((path, index) => {
             return (
                 <Path key={index} path={path} color="transparent">
-                    <Paint style="stroke" strokeWidth={dayViewStrokeWidth} strokeCap="round" color={thisHabitCompletedToday(habitsToday[index], date) ? isToday ? "white" : usedColors[habitsToday[index].category] : "#404040" } />
+                    <Paint style="stroke" strokeWidth={dayViewStrokeWidth} strokeCap="round" color={thisHabitCompletedToday(habitsToday[index], date) ? isToday ? "white" : usedColors[habitsToday[index].category] : numHabits == 0 ?  "#101010" : "#404040" } />
                 </Path>
             )
         })
@@ -177,6 +184,7 @@ const Calendar = () => {
                 </View>
             ) : (
                 <ICalendar
+                    enableSwipeMonths={true}
                     hideExtraDays={true}
                     dayComponent={({ date, state }) => {
                         const isToday = moment(date.dateString).isSame(moment(), 'day');
@@ -204,6 +212,7 @@ const Calendar = () => {
                         dayTextColor: '#d9e1e8',
                         monthTextColor: 'white',
                         textDisabledColor: '#2d4150',
+                        arrowColor: 'white',
                     }}
                     onDayPress={(day) => { setSelected(day.dateString) }}
                     markedDates={{
