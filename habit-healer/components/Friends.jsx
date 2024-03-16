@@ -21,6 +21,11 @@ const Friends = ({ setCurrentScreen }) => {
             width: Dimensions.get('window').width,
             backgroundColor: backgroundColor, // Applies the dynamic background color
         },
+        loadingContainerHorizontal: {
+            flexDirection: 'row',
+            justifyContent: 'center',
+            padding: 10,
+        },
         // Define topRightButtonText style to be used below
         topRightButtonText: {
             color: colors.headerColor, // Example color, adjust as necessary
@@ -42,7 +47,9 @@ const Friends = ({ setCurrentScreen }) => {
                     ]
                 }
             />
-            <NotificationsFeed />
+            <View style={dynamicStyles.loadingContainerHorizontal}>
+                <NotificationsFeed />
+            </View>
         </View>
     );
 };

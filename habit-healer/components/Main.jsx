@@ -41,6 +41,8 @@ const Main = ({ setCurrentScreen }) => {
 
     const [modalVisible, setModalVisible] = useState(false);
 
+    const [usedColors, setUsedColors] = useState({});
+
     // Generate the weeks array based on the current week
     const weeks = React.useMemo(() => {
         const start = moment().add(week, 'weeks').startOf('week');
@@ -65,8 +67,10 @@ const Main = ({ setCurrentScreen }) => {
                 if (snapshot.exists()) {
                     const categories = snapshot.val()
                     const newHabits = [];
+                    const colorList = {}
                     Object.keys(categories).forEach(category => {
-                        const habits = categories[category];
+                        colorList[category] = categories[category].color
+                        const habits = categories[category].habitList;
                         Object.keys(habits).forEach(habitName => {
                             const habit = habits[habitName];
                             if (habit.weekdays && habit.weekdays.includes(value.getDay() + 1)) {
@@ -82,6 +86,7 @@ const Main = ({ setCurrentScreen }) => {
                         })
                     })
                     setHabits(newHabits);
+                    setUsedColors(colorList);
                 } else {
                     console.log("no habits found")
                 }
@@ -143,7 +148,7 @@ const Main = ({ setCurrentScreen }) => {
 
             <View style={styles.picker}>
                 <Swiper
-                    style={{height: 'auto'}}
+                    style={{ height: 'auto' }}
                     index={1}
                     ref={swiper}
                     loop={false}
@@ -207,7 +212,7 @@ const Main = ({ setCurrentScreen }) => {
                             </View>
                         ) : (
                             <View style={styles.loadingContainerHorizontal}>
-                                <HabitList habits={filteredHabits} currentDate={currentDate}></HabitList>
+                                <HabitList habits={filteredHabits} currentDate={currentDate} colorList={usedColors}></HabitList>
                             </View>
                         )
                     )}

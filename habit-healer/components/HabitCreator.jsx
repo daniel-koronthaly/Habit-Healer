@@ -14,7 +14,7 @@ import {
     useColorScheme
 } from 'react-native';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
-import { colors } from '../colors/colors';
+import { colors, habitColors } from '../colors/colors';
 import Autocomplete from 'react-native-autocomplete-input';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DaySelector from './DaySelector';
@@ -22,7 +22,7 @@ import SubpageHeader from './SubpageHeader';
 
 const auth = getAuth();
 
-const HabitCreator = () => {
+const HabitCreator = ({setCurrentScreen}) => {
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState('');
@@ -39,6 +39,8 @@ const HabitCreator = () => {
     const toggleSwitch = () => setShareWithFriends(previousState => !previousState);
     const [weekdays, setWeekdays] = React.useState([])
 
+    const [usedColors, setUsedColors] = useState({});
+
     const theme = useColorScheme();
 
     // this gets all of the previously used categories of habits by this user
@@ -49,6 +51,11 @@ const HabitCreator = () => {
                 const data = snapshot.val()
                 if (data && Object.keys(data).length > 0) {
                     const categories = Object.keys(data);
+                    const colorList = {}
+                    Object.keys(data).forEach(category => {
+                        colorList[category] = data[category].color
+                    })
+                    setUsedColors(colorList)
                     setCategories(categories);
                     setLoadingCategories(false);
                 }
@@ -92,7 +99,7 @@ const HabitCreator = () => {
     };
 
     function cancel() {
-        // set screen to habit overview
+        setCurrentScreen('HabitOverview')
     }
 
     // returns true if database query can be made and all elements of a habit are selected
@@ -141,22 +148,62 @@ const HabitCreator = () => {
                 "sharesWithFriends": shareWithFriends,
                 "dateUpdated": new Date().toDateString()
             }
-            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + category + "/" + habitName), habit).then(() => {
-                // Alert.alert(
-                //     "Added new habit",
-                //     [
-                //         {
-                //             text: "OK",
-                //         },
-                //     ]
-                // );
-                // Why is this crashing
-            }).catch((error) => {
-                console.log("Failed to write habit to database " + error);
-            });
-            
+            if (usedColors[category]) {
+                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + category + "/habitList/" + habitName), habit).then(() => {
+                    // Alert.alert(
+                    //     "Added new habit",
+                    //     [
+                    //         {
+                    //             text: "OK",
+                    //         },
+                    //     ]
+                    // );
+                    // Why is this crashing
+                }).catch((error) => {
+                    console.log("Failed to write habit to database " + error);
+                });
+            }
+            else {
+                let chosenColor = null;
+                const colorKeys = Object.keys(habitColors);
+                for (let i = 0; i < colorKeys.length; i++) {
+                    const color = habitColors[colorKeys[i]]
+                    if (!Object.values(usedColors).some(newcolor => newcolor === color)) {
+                        chosenColor = color;
+                        break;
+                    }
+                }
+                if (chosenColor) {
+                    const categoryRef = ref(dbRef, "habits/" + auth.currentUser.uid + "/" + category);
+                    const dataToSet = {
+                        "color": chosenColor,
+                        "habitList": {
+                            [habitName]: habit
+                        }
+                    };
+                    set(categoryRef, dataToSet);
+                    setUsedColors(prevUsedColors => ({
+                        ...prevUsedColors,
+                        [category]: chosenColor
+                    }));
+                    console.log("set new category " + category + " with color " + chosenColor)
+                }
+                else {
+                    Alert.alert(
+                        "Error adding habit",
+                        "There are 10 categories allowed max. Delete habits from a category to free up a slot.",
+                        [
+                            {
+                                text: "OK",
+                            },
+                        ]
+                    );
+                }
+            }
+            setCurrentScreen('HabitOverview')
         }
     }
+
 
     return (
         <View>
@@ -175,10 +222,6 @@ const HabitCreator = () => {
                         // titleStyle={{ color: 'black' }}
                         rightSideButtonArray={
                             [
-                                <TouchableOpacity onPress={cancel}>
-                                    <Text style={[styles.topRightButtonText, theme == 'light' ? styles.lightText : styles.darkText]}>Cancel</Text>
-                                </TouchableOpacity>,
-
                                 <TouchableOpacity onPress={saveHabit}>
                                     <Text style={[styles.topRightButtonText, { color: colors.headerColor }]}>Done</Text>
                                 </TouchableOpacity>

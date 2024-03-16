@@ -13,10 +13,12 @@ import MainpageHeader from './MainpageHeader'
 import HabitOverviewList from './HabitOverviewList'
 import { colors } from '../colors/colors';
 
-const HabitOverview = ({ setCurrentScreen }) => {
+const HabitOverview = ({ setCurrentScreen, setSelectedHabit }) => {
 
     const [loadingHabits, setLoadingHabits] = useState(true);
     const [habits, setHabits] = useState([])
+
+    const [usedColors, setUsedColors] = useState({});
 
     const theme = useColorScheme();
 
@@ -30,8 +32,10 @@ const HabitOverview = ({ setCurrentScreen }) => {
                 if (snapshot.exists()) {
                     const categories = snapshot.val()
                     const newHabits = [];
+                    const colorList = {}
                     Object.keys(categories).forEach(category => {
-                        const habits = categories[category];
+                        colorList[category] = categories[category].color
+                        const habits = categories[category].habitList;
                         Object.keys(habits).forEach(habitName => {
                             const habit = habits[habitName];
                             const newHabit = {
@@ -45,6 +49,7 @@ const HabitOverview = ({ setCurrentScreen }) => {
                         })
                     })
                     setHabits(newHabits);
+                    setUsedColors(colorList);
                 } else {
                     console.log("no habits found")
                 }
@@ -89,7 +94,7 @@ const HabitOverview = ({ setCurrentScreen }) => {
                         </View>
                     ) : (
                         <View style={styles.loadingContainerHorizontal}>
-                            <HabitOverviewList habits={habits} setCurrentScreen={setCurrentScreen}/>
+                            <HabitOverviewList habits={habits} setCurrentScreen={setCurrentScreen} setSelectedHabit={setSelectedHabit} colorList={usedColors}/>
                         </View>
                     )
                 )}
