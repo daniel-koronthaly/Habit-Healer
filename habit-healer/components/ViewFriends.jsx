@@ -4,6 +4,7 @@ import { getAuth } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 import NotificationsFeed from './NotificationsFeed';
 import SubpageHeader from './SubpageHeader';
+import FriendList from './FriendsList';
 
 const auth = getAuth();
 
@@ -42,7 +43,7 @@ const ViewFriends = ({ setCurrentScreen }) => {
                     ]
                 }
             />
-            <NotificationsFeed />
+            <FriendList />
         </View>
     );
 };
