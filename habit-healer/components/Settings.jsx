@@ -112,21 +112,29 @@ const styles = StyleSheet.create({
         paddingBottom: 40
     },
     btn: {
-        width: "80%",
-        borderRadius: 25,
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: '#333',
+        marginBottom: 10,
+        height: 70,
+        width: '100%',
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderRadius: 10,
     },
+    btnTxt: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: 'white',
+    },
+
     deleteBtn: {
         backgroundColor: colors.defaultButtonColor,
     },
     signOutBtn: {
         backgroundColor: colors.defaultButtonColor,
         marginBottom: 20,
-    },
-    btnTxt: {
-        color: 'white',
-        fontWeight: 'bold',
     },
 });
