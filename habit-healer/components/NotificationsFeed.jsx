@@ -1,4 +1,3 @@
-// NotificationsFeed.js
 import React from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import NotificationItem from './NotificationItem'; // Adjust the path as necessary
