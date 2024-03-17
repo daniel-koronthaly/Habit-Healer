@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '../colors/colors';
+import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+
+const auth = getAuth();
 
 const MentalHealthLogModal = ({ visible, onClose }) => {
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [rating, setRating] = useState(3); // Default rating
   
   const handleRating = (value) => {
@@ -14,9 +18,12 @@ const MentalHealthLogModal = ({ visible, onClose }) => {
   };
 
   const handleLog = () => {
-    // Handle logging the mental health rating
-    // For demonstration purposes, you can just console log it
+    const dbRef = getDatabase();
+    let currentDate = new Date().toLocaleDateString('en-US', { timeZone: userTimezone })
+    currentDate = currentDate.replace(/\//g, '-');
+    console.log(currentDate)
     console.log("Logged mental health rating:", rating);
+    set(ref(dbRef, "mentalHealth/" + auth.currentUser.uid + "/" + currentDate), rating)
     onClose();
   };
 
