@@ -102,31 +102,39 @@ export default function Settings({ setCurrentScreen }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+
         padding: 10,
-        width: Dimensions.get('window').width,
+        width: Dimensions.get('window').width
     },
     btnContainer: {
         flex: 1,
-        justifyContent: 'flex-end',
         alignItems: 'center',
-        paddingBottom: 40
+        paddingBottom: 40,
     },
     btn: {
-        width: "80%",
-        borderRadius: 25,
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: '#333',
+        marginBottom: 10,
+        height: 70,
+        width: '100%',
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 10,
     },
+    btnTxt: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: 'white',
+    },
+
     deleteBtn: {
         backgroundColor: colors.defaultButtonColor,
     },
     signOutBtn: {
         backgroundColor: colors.defaultButtonColor,
         marginBottom: 20,
-    },
-    btnTxt: {
-        color: 'white',
-        fontWeight: 'bold',
     },
 });
