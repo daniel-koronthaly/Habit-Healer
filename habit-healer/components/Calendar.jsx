@@ -10,6 +10,7 @@ import {
     useColorScheme
 } from 'react-native';
 import SubpageHeader from './SubpageHeader';
+import MainpageHeader from './MainpageHeader';
 import { Ionicons } from '@expo/vector-icons';
 import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
@@ -157,7 +158,7 @@ const Calendar = () => {
     return (
         <View>
             <>
-                <SubpageHeader
+                {/* <SubpageHeader
                     title={'Calendar'}
                     backButtonFunction={cancel}
                     // backButtonStyle={{ color: colors.headerColor }}
@@ -173,6 +174,17 @@ const Calendar = () => {
                             // <TouchableOpacity onPress={() => { setYear(year + 1) }}>
                             //     <Ionicons name={'chevron-forward-outline'} size={20} color="white" />
                             // </TouchableOpacity>
+                        ]
+                    }
+                /> */}
+
+                <MainpageHeader
+                    title={"Calendar"}
+                    rightSideButtonArray={
+                        [
+                        //     <TouchableOpacity onPress={() => { setCurrentScreen("HabitCreator"); }}>
+                        //         <Text style={[styles.topRightButtonText, { color: colors.headerColor }]}>Add Habit</Text>
+                        //     </TouchableOpacity>,
                         ]
                     }
                 />
