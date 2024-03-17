@@ -17,7 +17,7 @@ const FriendList = () => {
 
     let localUserNames = {};
     // Fetch user names
-    let namesRef = ref(database, 'names');
+    let namesRef = ref(database, 'usernames');
     console.log(namesRef)
     get(namesRef).then((snapshot) => {
       console.log('in here')
