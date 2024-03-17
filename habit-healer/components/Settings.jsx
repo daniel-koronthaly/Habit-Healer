@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import MainpageHeader from './MainpageHeader';
 import { signOut, getAuth, getDatabase, deleteUser, remove, ref, child } from "../firebase/firebaseConfig";
-
 import { colors } from '../colors/colors'
 
 const auth = getAuth();
@@ -17,6 +16,7 @@ const auth = getAuth();
 export default function Settings({ setCurrentScreen }) {
     const theme = useColorScheme();
     const uid = auth.currentUser.uid;
+    const email = getAuth().currentUser.email;
 
     const deleteAccount = () => {
         Alert.alert(
@@ -84,6 +84,10 @@ export default function Settings({ setCurrentScreen }) {
                     }
                 />
             </>
+            <View>
+                <Text style={styles.loggedInText}>Currently logged in as:</Text>
+                <Text style={styles.username}>{email}</Text>
+            </View>
             <View style={styles.container}>
                 <View style={styles.btnContainer}>
                     <TouchableOpacity style={[styles.signOutBtn, styles.btn]} onPress={() => { signOutUser() }}>
@@ -112,7 +116,7 @@ const styles = StyleSheet.create({
         paddingBottom: 40,
     },
     btn: {
-        backgroundColor: '#333',
+        backgroundColor: colors.darkLoginButtonColor,
         marginBottom: 10,
         height: 70,
         width: '100%',
@@ -136,5 +140,19 @@ const styles = StyleSheet.create({
     signOutBtn: {
         backgroundColor: colors.defaultButtonColor,
         marginBottom: 20,
+    },
+    username: {
+        fontSize: 23,
+        fontWeight: 'bold',
+        color: colors.appBackgroundColor,
+        textAlign: 'center',
+        marginTop: 5,
+        marginBottom: 10,
+        
+    },
+    loggedInText: {
+        fontSize: 23,
+        color: colors.appBackgroundColor,
+        textAlign: 'center',
     },
 });

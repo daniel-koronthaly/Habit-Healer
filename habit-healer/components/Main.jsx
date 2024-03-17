@@ -135,7 +135,7 @@ const Main = ({ setCurrentScreen }) => {
     return (
         <SafeAreaView style={{ height: '100%' }}>
             <View style={styles.greetingContainer}>
-                <Text style={[styles.greeting, theme == 'light' ? styles.lightText : styles.darkText]}>
+                <Text style={styles.greeting}>
                     Good {timeOfDay} {emoji}
                 </Text>
                 <TouchableOpacity onPress={logMentalHealth}>
@@ -174,7 +174,7 @@ const Main = ({ setCurrentScreen }) => {
                                 return (
                                     <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
                                         <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
-                                            <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
+                                            <Text style={[styles.itemWeekday, isActive && { color: colors.darkTextColor }]}>
                                                 {item.weekday}
                                             </Text>
                                             <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
@@ -205,7 +205,7 @@ const Main = ({ setCurrentScreen }) => {
                     ) : (
                         memoizedHabits.length === 0 ? (
                             <View style={styles.addHabit}>
-                                <Text style={[styles.addHabitText, theme == 'light' ? styles.lightText : styles.darkText]}>Add your first habit to get started!</Text>
+                                <Text style={styles.addHabitText}>Add your first habit to get started!</Text>
                                 <TouchableOpacity style={styles.addHabitButton} onPress={() => { setCurrentScreen('HabitCreator'); }}>
                                     <Text style={styles.addHabitText}>Add Habit</Text>
                                 </TouchableOpacity>
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     addHabitText: {
         fontSize: 20,
         fontWeight: '600',
-        color: 'white',
+        color: colors.darkTextColor
     },
     addHabitButton: {
         backgroundColor: colors.headerColor,
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     greeting: {
         fontSize: 24,
         fontWeight: '700',
-        //color: 'white',
+        color: colors.darkTextColor
     },
     filter: {
         justifyContent: 'center',
@@ -314,12 +314,6 @@ const styles = StyleSheet.create({
     },
     inactive: {
 
-    },
-    lightText: {
-        color: colors.lightTextColor
-    },
-    darkText: {
-        color: colors.darkTextColor
     },
     logButton: {
         color: colors.headerColor,
