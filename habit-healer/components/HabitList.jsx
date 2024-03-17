@@ -126,10 +126,10 @@ const HabitList = ({ habits, currentDate, colorList }) => {
         item.habit.datesCompleted = item.habit.datesCompleted.filter(entry => entry.date !== currentDate)
         if (item.habit.datesCompleted.length === 0) {
             delete item.habit.datesCompleted;
-            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), null)
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), null)
         }
         else {
-            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
         }
         const modifiedHabits = sortedHabits.map((originalItem) =>
             originalItem.id === item.id ? item : originalItem

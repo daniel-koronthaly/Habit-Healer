@@ -19,6 +19,7 @@ import { colors } from '../colors/colors';
 import HabitList from './HabitList';
 import HabitFilter from './HabitFilter';
 import MentalHealthLogModal from './MentalHealthModal';
+import { Ionicons } from '@expo/vector-icons';
 
 const windowWidth = Dimensions.get('window').width;
 const Main = ({ setCurrentScreen }) => {
@@ -40,6 +41,7 @@ const Main = ({ setCurrentScreen }) => {
     const theme = useColorScheme();
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [mentalHealthDone, setMentalHealthDone] = useState(false);
 
     const [usedColors, setUsedColors] = useState({});
 
@@ -60,8 +62,19 @@ const Main = ({ setCurrentScreen }) => {
     // every time a different day is selected, see which habits match that day of the week
     useEffect(() => {
         const fetchData = async () => {
+            setMentalHealthDone(false)
             setLoadingHabits(true);
             const dbRef = ref(getDatabase());
+            try {
+                const adjustedDate = currentDate.replace(/\//g, '-');
+                const snapshot = await get(child(dbRef, "mentalHealth/" + auth.currentUser.uid + "/" + adjustedDate))
+                if (snapshot.exists()) {
+                    setMentalHealthDone(true)
+                }
+            }
+            catch {
+                console.error('Error fetching mental health:', error);
+            }
             try {
                 const snapshot = await get(child(dbRef, "habits/" + auth.currentUser.uid))
                 if (snapshot.exists()) {
@@ -135,14 +148,26 @@ const Main = ({ setCurrentScreen }) => {
     return (
         <SafeAreaView style={{ height: '100%' }}>
             <View style={styles.greetingContainer}>
-                <Text style={styles.greeting}>
+                <Text style={[styles.greeting, theme == 'light' ? styles.lightText : styles.darkText]}>
                     Good {timeOfDay} {emoji}
                 </Text>
-                <TouchableOpacity onPress={logMentalHealth}>
-                    <Text style={styles.logButton}>
-                        Mental Health
-                    </Text>
-                </TouchableOpacity>
+                <View style={styles.iconContainer}>
+                    <TouchableOpacity style={styles.rowItem} onPress={logMentalHealth}>
+                        <Text style={styles.logButton}>
+                            Mental Health
+                        </Text>
+                    </TouchableOpacity>
+                    <View style={styles.rowItemRight}>
+                        {!mentalHealthDone ?
+                            (<View style={styles.icon}>
+                                <Ionicons name={'alert-outline'} size={15} color={"black"} />
+                            </View>) : 
+                            (<View style={styles.iconDone}>
+                                <Ionicons name={'checkmark-outline'} size={15} color={"white"} />
+                            </View>) 
+                        }
+                    </View>
+                </View>
                 <MentalHealthLogModal visible={modalVisible} onClose={closeModal} />
             </View>
 
@@ -174,7 +199,7 @@ const Main = ({ setCurrentScreen }) => {
                                 return (
                                     <TouchableWithoutFeedback key={dateIndex} onPress={() => setValue(item.date)}>
                                         <View style={[styles.item, isActive && { backgroundColor: colors.specialButtonColor, borderColor: colors.specialButtonColor }]}>
-                                            <Text style={[styles.itemWeekday, isActive && { color: colors.darkTextColor }]}>
+                                            <Text style={[styles.itemWeekday, isActive && { color: theme == 'light' ? colors.lightTextColor : colors.darkTextColor }]}>
                                                 {item.weekday}
                                             </Text>
                                             <View style={[styles.itemDateContainer, isActive ? styles.active : styles.inactive]}>
@@ -205,7 +230,7 @@ const Main = ({ setCurrentScreen }) => {
                     ) : (
                         memoizedHabits.length === 0 ? (
                             <View style={styles.addHabit}>
-                                <Text style={styles.addHabitText}>Add your first habit to get started!</Text>
+                                <Text style={[styles.addHabitText, theme == 'light' ? styles.lightText : styles.darkText]}>Add your first habit to get started!</Text>
                                 <TouchableOpacity style={styles.addHabitButton} onPress={() => { setCurrentScreen('HabitCreator'); }}>
                                     <Text style={styles.addHabitText}>Add Habit</Text>
                                 </TouchableOpacity>
@@ -218,7 +243,7 @@ const Main = ({ setCurrentScreen }) => {
                     )}
                 </View>
             </View>
-        </SafeAreaView>)
+        </SafeAreaView >)
 }
 const styles = StyleSheet.create({
     loadingContainer: {
@@ -242,7 +267,7 @@ const styles = StyleSheet.create({
     addHabitText: {
         fontSize: 20,
         fontWeight: '600',
-        color: colors.darkTextColor
+        color: 'white',
     },
     addHabitButton: {
         backgroundColor: colors.headerColor,
@@ -262,8 +287,7 @@ const styles = StyleSheet.create({
     },
     greeting: {
         fontSize: 24,
-        fontWeight: '700',
-        color: colors.darkTextColor
+        fontWeight: '700'
     },
     filter: {
         justifyContent: 'center',
@@ -315,12 +339,44 @@ const styles = StyleSheet.create({
     inactive: {
 
     },
+    lightText: {
+        color: colors.lightTextColor
+    },
+    darkText: {
+        color: colors.darkTextColor
+    },
     logButton: {
         color: colors.headerColor,
         fontSize: 15,
         fontWeight: '600',
         marginLeft: 10,
         marginTop: 5
+    },
+    iconContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    icon: {
+        backgroundColor: 'white',
+        height: 18,
+        width: 18,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    iconDone: {
+        height: 18,
+        width: 18,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    rowItem: {
+    },
+    rowItemRight: {
+        width: 12,
+        marginLeft: 5,
     }
 });
 
