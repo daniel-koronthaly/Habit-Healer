@@ -31,15 +31,6 @@ const AddFriends = ({ setCurrentScreen }) => {
     // used to hide dropdown menu results when the dropdown is not selected
     const [isFocused, setIsFocused] = useState(false)
 
-    const [habitName, setHabitName] = useState('')
-
-    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-    const [selectedTime, setSelectedTime] = useState(null);
-
-    const [shareWithFriends, setShareWithFriends] = useState(false)
-    const toggleSwitch = () => setShareWithFriends(previousState => !previousState);
-    const [weekdays, setWeekdays] = React.useState([])
-
 
     const theme = useColorScheme();
 
@@ -264,6 +255,7 @@ const AddFriends = ({ setCurrentScreen }) => {
             position: 'absolute',
             right: 0,
             top: 0,
+            // backgroundColor: 'yellow',
             zIndex: 5,
         },
         left: {
@@ -273,10 +265,11 @@ const AddFriends = ({ setCurrentScreen }) => {
             flex: 4,
         },
         right: {
-            height: 60,
+            height: 53,
             flexDirection: 'column',
             justifyContent: "center",
             alignItems: 'center',
+            // backgroundColor: 'red',
             flex: 1,
         },
         listItem: {
@@ -314,11 +307,11 @@ const AddFriends = ({ setCurrentScreen }) => {
             marginBottom: 30
         },
         inputLine: {
-            height: 60,
+            // backgroundColor: 'green',
             flex: 1,
             flexDirection: 'row',
             justifyContent: 'left',
-            alignItems: 'center',
+            // alignItems: 'center',
         },
         ButtonText: {
             fontWeight: '700',
