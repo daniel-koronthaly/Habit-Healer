@@ -114,7 +114,7 @@ const AddFriends = ({ setCurrentScreen }) => {
                             });
                         }
                     }).then(() => {
-                        setCurrentScreen('AddFriends')
+                        setCurrentScreen('ViewFriends')
                     });
             } catch (error) {
                 console.error('Error fetching usernames:', error);
