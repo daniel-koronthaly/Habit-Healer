@@ -145,6 +145,11 @@ const Main = ({ setCurrentScreen }) => {
         setModalVisible(false);
     }
 
+    const onSendData = () => {
+        setMentalHealthDone(true);
+        setModalVisible(false);
+    }
+
     return (
         <SafeAreaView style={{ height: '100%' }}>
             <View style={styles.greetingContainer}>
@@ -161,14 +166,14 @@ const Main = ({ setCurrentScreen }) => {
                         {!mentalHealthDone ?
                             (<View style={styles.icon}>
                                 <Ionicons name={'alert-outline'} size={15} color={"black"} />
-                            </View>) : 
+                            </View>) :
                             (<View style={styles.iconDone}>
                                 <Ionicons name={'checkmark-outline'} size={15} color={"white"} />
-                            </View>) 
+                            </View>)
                         }
                     </View>
                 </View>
-                <MentalHealthLogModal visible={modalVisible} onClose={closeModal} />
+                <MentalHealthLogModal visible={modalVisible} onClose={closeModal} onSendData={onSendData} currentDate={currentDate} />
             </View>
 
             <View style={styles.picker}>

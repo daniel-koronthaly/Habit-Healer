@@ -5,7 +5,7 @@ import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebase
 
 const auth = getAuth();
 
-const MentalHealthLogModal = ({ visible, onClose }) => {
+const MentalHealthLogModal = ({ visible, onClose, onSendData, currentDate }) => {
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [rating, setRating] = useState(3); // Default rating
   
@@ -19,12 +19,11 @@ const MentalHealthLogModal = ({ visible, onClose }) => {
 
   const handleLog = () => {
     const dbRef = getDatabase();
-    let currentDate = new Date().toLocaleDateString('en-US', { timeZone: userTimezone })
-    currentDate = currentDate.replace(/\//g, '-');
-    console.log(currentDate)
+    adjustedDate = currentDate.replace(/\//g, '-');
+    console.log(adjustedDate)
     console.log("Logged mental health rating:", rating);
-    set(ref(dbRef, "mentalHealth/" + auth.currentUser.uid + "/" + currentDate), rating)
-    onClose();
+    set(ref(dbRef, "mentalHealth/" + auth.currentUser.uid + "/" + adjustedDate), rating)
+    onSendData();
   };
 
   return (
