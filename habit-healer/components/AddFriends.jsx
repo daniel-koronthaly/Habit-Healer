@@ -9,7 +9,6 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
     Keyboard,
-    Switch,
     Dimensions,
     useColorScheme
 } from 'react-native';
@@ -71,23 +70,6 @@ const AddFriends = ({ setCurrentScreen }) => {
         Keyboard.dismiss()
     };
 
-    const showTimePicker = () => {
-        setTimePickerVisibility(true);
-    };
-
-    const hideTimePicker = () => {
-        setTimePickerVisibility(false);
-    };
-
-    const handleTimeConfirm = (time) => {
-        setSelectedTime(time);
-        hideTimePicker();
-    };
-
-    function cancel() {
-        setCurrentScreen('HabitOverview')
-    }
-
     // returns true if database query can be made and all elements of a habit are selected
     function checkSavable() {
         let savable = true;
@@ -113,38 +95,28 @@ const AddFriends = ({ setCurrentScreen }) => {
     // saves habit in firebase
     function saveFriend() {
         if (checkSavable()) {
-            console.log(1)
             const dbRef = ref(getDatabase());
-            console.log(2)
             try {
                 get(child(dbRef, "usernames"))
                     .then(snapshot => {
                         if (snapshot.exists()) {
-                            console.log(3)
                             const data = snapshot.val()
-                            console.log(45)
                             console.log(data)
                             Object.keys(data).forEach(uid => {
-                                console.log(6)
                                 console.log("uid", uid)
                                 console.log(data[uid] + " " + username)
                                 if (data[uid] === username) {
-                                    console.log(7)
                                     const myuid = auth.currentUser.uid
-                                    console.log(7.5)
                                     set(child(dbRef, "friends/" + myuid + "/" + uid), true).then(() => { }).catch((error) => {
-                                        console.log(8)
                                         console.log("Failed to write friend to database " + error);
                                     });
                                 }
                             });
                         }
                     }).then(() => {
-                        console.log(10)
                         setCurrentScreen('AddFriends')
                     });
             } catch (error) {
-                console.log(11)
                 console.error('Error fetching usernames:', error);
             }
         }

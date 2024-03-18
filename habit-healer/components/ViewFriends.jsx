@@ -16,7 +16,7 @@ const ViewFriends = ({ setCurrentScreen }) => {
     const dynamicStyles = StyleSheet.create({
         container: {
             flex: 1,
-            paddingTop: 10,
+            padding: 10,
             width: Dimensions.get('window').width,
             backgroundColor: backgroundColor,
         },

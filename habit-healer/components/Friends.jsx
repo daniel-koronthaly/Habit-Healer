@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, useColorScheme, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { getAuth } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 import NotificationsFeed from './NotificationsFeed';

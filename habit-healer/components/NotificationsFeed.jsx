@@ -21,8 +21,6 @@ const NotificationsFeed = () => {
     let namesRef = ref(database, 'usernames');
     console.log(namesRef)
     get(namesRef).then((snapshot) => {
-      console.log('in here')
-      console.log(snapshot.val())
       localUserNames = snapshot.val();
       if (snapshot.exists()) {
         setUserNames(snapshot.val());
