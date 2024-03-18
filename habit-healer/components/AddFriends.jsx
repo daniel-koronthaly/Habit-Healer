@@ -22,6 +22,7 @@ import SubpageHeader from './SubpageHeader';
 
 const auth = getAuth();
 
+
 const AddFriends = ({setCurrentScreen}) => {
     const [loadingUsernames, setLoadingUsernames] = useState(true);
     const [usernames, setUsernames] = useState([]);
@@ -102,24 +103,11 @@ const AddFriends = ({setCurrentScreen}) => {
         let errorMessage = '';
         if (username === '') {
             savable = false;
-            errorMessage += "You must give a username for this habit.\n"
+            errorMessage += "You must give a username for your friend.\n"
         }
-        if (habitName === '') {
-            savable = false;
-            errorMessage += "You must choose a name for this habit.\n"
-        }
-        if (selectedTime === null) {
-            savable = false;
-            errorMessage += "You must choose a time.\n"
-        }
-        if (!weekdays.length) {
-            savable = false;
-            errorMessage += "You must choose at least one day.\n"
-        }
-        errorMessage = errorMessage.trimEnd();
         if (!savable) {
             Alert.alert(
-                "Error adding habit",
+                "Error adding friend",
                 errorMessage,
                 [
                     {
@@ -132,65 +120,36 @@ const AddFriends = ({setCurrentScreen}) => {
     }
 
     // saves habit in firebase
-    function saveHabit() {
+    function saveFriend() {
         if (checkSavable()) {
-            setWeekdays(weekdays.sort())
-            const dbRef = getDatabase();
-            const habit = {
-                "notificationTime": selectedTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, }),
-                "weekdays": weekdays,
-                "sharesWithFriends": shareWithFriends,
-                "dateUpdated": new Date().toDateString()
-            }
-            if (usedColors[username]) {
-                set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + username + "/habitList/" + habitName), habit).then(() => {
-                    // Alert.alert(
-                    //     "Added new habit",
-                    //     [
-                    //         {
-                    //             text: "OK",
-                    //         },
-                    //     ]
-                    // );
-                    // Why is this crashing
-                }).catch((error) => {
-                    console.log("Failed to write habit to database " + error);
-                });
-            }
-            else {
-                let chosenColor = null;
-                const colorKeys = Object.keys(habitColors);
-                for (let i = 0; i < colorKeys.length; i++) {
-                    const color = habitColors[colorKeys[i]]
-                    if (!Object.values(usedColors).some(newcolor => newcolor === color)) {
-                        chosenColor = color;
-                        break;
+            console.log(1)
+            const dbRef = ref(getDatabase());
+            console.log(2)
+            get(child(dbRef, "usernames"))
+            .then(snapshot => {
+                console.log(3)
+                const data = snapshot.val()
+                console.log(4)
+                if (data && Object.keys(data).length > 0) {
+                    console.log(5)
+                    for (const uid in Object.keys(data)) {
+                        console.log(6)
+                        if (data[uid] === username) {
+                            console.log(7)
+                            myuid = auth.currentUser.uid
+                            console.log(7.5)
+                            set(ref(child(dbRef, "friends/" + myuid + "/" + uid)), username).then(() => {}).catch((error) => {
+                                console.log(8)
+                                console.log("Failed to write friend to database " + error);
+                            });
+                            break;
+                        }
                     }
                 }
-                if (chosenColor) {
-                    const usernameRef = ref(dbRef, "habits/" + auth.currentUser.uid + "/" + username);
-                    const dataToSet = {
-                        "color": chosenColor,
-                        "habitList": {
-                            [habitName]: habit
-                        }
-                    };
-                    set(usernameRef, dataToSet);
-                    console.log("set new username " + username + " with color " + chosenColor)
-                }
-                else {
-                    Alert.alert(
-                        "Error adding habit",
-                        "There are 10 usernames allowed max. Delete habits from a username to free up a slot.",
-                        [
-                            {
-                                text: "OK",
-                            },
-                        ]
-                    );
-                }
-            }
-            setCurrentScreen('HabitOverview')
+            }).then(() => {
+            console.log(10)
+            setCurrentScreen('AddFriends')
+            });
         }
     }
 
@@ -207,52 +166,53 @@ const AddFriends = ({setCurrentScreen}) => {
                 <>
                     <SubpageHeader
                         title={'Add Friends'}
-                        backButtonFunction={cancel}
+                        backButtonFunction={() => { setCurrentScreen("ViewFriends"); }}
                         // backButtonStyle={{ color: colors.headerColor }}
                         // titleStyle={{ color: 'black' }}
-                        rightSideButtonArray={
-                            [
-                                <TouchableOpacity onPress={saveHabit}>
-                                    <Text style={[styles.topRightButtonText, { color: colors.headerColor }]}>Done</Text>
-                                </TouchableOpacity>
-                            ]
-                        }
+                        rightSideButtonArray={[]}
                     />
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.container} pointerEvents='box-none'>
                             <View zIndex={1} style={styles.textInputPair}>
                                 <Text style={[styles.labelText, theme == 'light' ? styles.lightText : styles.darkText]}>Username</Text>
-                                <View style={styles.containerCenter}>
-                                    <View style={styles.autocompleteContainer}>
-                                        <Autocomplete
-                                            data={findCategory(username)}
-                                            flatListProps={{
-                                                keyboardShouldPersistTaps: 'handled',
-                                                keyExtractor: (_, idx) => idx.toString(),
-                                                renderItem: ({ item }) => (
-                                                    <TouchableOpacity style={styles.listItem} onPress={() => handleSelectCategory(item)}>
-                                                        <Text style={styles.itemText}>{item}</Text>
-                                                    </TouchableOpacity>
-                                                ),
-                                            }}
-                                            hideResults={!isFocused}
-                                            inputContainerStyle={styles.inputContainerStyle}
-                                            containerStyle={flex = 1}
-                                            listContainerStyle={styles.listContainer}
-                                            renderTextInput={() => (
-                                                <TextInput
-                                                    defaultValue={username}
-                                                    style={[styles.input, theme == 'light' ? styles.lightText : styles.darkText]}
-                                                    placeholder="Select a username"
-                                                    //placeholderTextColor={theme == 'light' ? colors.lightTextColor : colors.darkTextColor}
-                                                    onFocus={() => setIsFocused(true)}
-                                                    onBlur={() => setIsFocused(false)}
-                                                    onTextInput={() => setIsFocused(true)}
-                                                    onChangeText={(text) => setUsername(text)}
-                                                    value={username}
-                                                />
-                                            )}
-                                        />
+                                <View style={styles.inputLine}>
+                                    <View style={styles.left}>
+                                        <View style={styles.autocompleteContainer}>
+                                            <Autocomplete
+                                                data={findCategory(username)}
+                                                flatListProps={{
+                                                    keyboardShouldPersistTaps: 'handled',
+                                                    keyExtractor: (_, idx) => idx.toString(),
+                                                    renderItem: ({ item }) => (
+                                                        <TouchableOpacity style={styles.listItem} onPress={() => handleSelectCategory(item)}>
+                                                            <Text style={styles.itemText}>{item}</Text>
+                                                        </TouchableOpacity>
+                                                    ),
+                                                }}
+                                                hideResults={!isFocused}
+                                                inputContainerStyle={styles.inputContainerStyle}
+                                                containerStyle={flex = 1}
+                                                listContainerStyle={styles.listContainer}
+                                                renderTextInput={() => (
+                                                    <TextInput
+                                                        defaultValue={username}
+                                                        style={[styles.input, theme == 'light' ? styles.lightText : styles.darkText]}
+                                                        placeholder="Select a username"
+                                                        //placeholderTextColor={theme == 'light' ? colors.lightTextColor : colors.darkTextColor}
+                                                        onFocus={() => setIsFocused(true)}
+                                                        onBlur={() => setIsFocused(false)}
+                                                        onTextInput={() => setIsFocused(true)}
+                                                        onChangeText={(text) => setUsername(text)}
+                                                        value={username}
+                                                    />
+                                                )}
+                                            />
+                                        </View>
+                                    </View>
+                                    <View style={styles.right}>
+                                        <TouchableOpacity style={styles.button} onPress={saveFriend}>
+                                            <Text style={[styles.ButtonText, { color: colors.headerColor }]}>Done</Text>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
@@ -287,11 +247,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    containerCenter: {
-        flexDirection: 'row',
-        flex: 1,
-        justifyContent: 'center'
-    },
     listContainer: {
         borderColor: 'transparent',
         maxHeight: 300,
@@ -304,6 +259,19 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         zIndex: 5,
+    },
+    left: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        flex: 4,
+    },
+    right: {
+        height: 60,
+        flexDirection: 'column',
+        justifyContent: "center",
+        alignItems: 'center',
+        flex: 1,
     },
     listItem: {
         justifyContent: 'center',
@@ -339,10 +307,23 @@ const styles = StyleSheet.create({
         height: 60,
         marginBottom: 30
     },
-    topRightButtonText: {
+    inputLine: {
+        height: 60,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'left',
+        alignItems: 'center',
+    },
+    ButtonText: {
         fontWeight: '700',
         fontSize: 18,
         //color: 'white'
+    },
+    button: {
+        height: 60,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
     },
     day: {
         backgroundColor: 'red'
