@@ -37,7 +37,7 @@ const SubList = ({ habits, setCurrentScreen, setSelectedHabit, colorList }) => {
                         <Ionicons name={'pencil-outline'} size={20} color="white" />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress={() => { setCurrentScreen('Stats') }}>
+                    <TouchableOpacity style={styles.button} onPress={() => { setSelectedHabit(item); setCurrentScreen('Stats') }}>
                         <Text style={styles.completedText}>Stats</Text>
                     </TouchableOpacity>
                 </View>

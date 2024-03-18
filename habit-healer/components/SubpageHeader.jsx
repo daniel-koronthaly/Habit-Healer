@@ -23,7 +23,7 @@ const SubpageHeader = ({ title, backButtonFunction, rightSideButtonArray }) => {
                         <Ionicons name={'chevron-back-outline'} size={28} color="white" />
                     </TouchableOpacity>
                     <View style={styles.textContainer}>
-                        <Text style={styles.title}>{title}</Text>
+                        <Text style={[styles.title, { fontSize: title.length > 10 ? 20 : 26 }]}>{title}</Text>
                     </View>
                 </View>
                 <View style={styles.right}>

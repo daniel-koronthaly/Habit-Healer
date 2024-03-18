@@ -17,6 +17,7 @@ import HabitOverview from './components/HabitOverview';
 import Calendar from './components/Calendar';
 import HabitCreator from './components/HabitCreator';
 import EditHabit from './components/EditHabit';
+import Stats from './components/Stats';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Login');
@@ -43,6 +44,8 @@ export default function App() {
         return <Calendar />
       case 'EditHabit':
         return <EditHabit selectedHabit={selectedHabit} setCurrentScreen={setCurrentScreen}/>
+      case 'Stats':
+        return <Stats selectedHabit={selectedHabit} setCurrentScreen={setCurrentScreen}/>
       case 'Settings':
         return <Settings setCurrentScreen={setCurrentScreen} />
       default:
