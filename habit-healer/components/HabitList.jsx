@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const auth = getAuth();
 
-const HabitList = ({ habits, currentDate, colorList }) => {
+const HabitList = ({ habits, currentDate, isAfterCurrentDate, colorList }) => {
 
     const [sortedHabits, setSortedHabits] = useState([...habits].sort(sortHabits));
 
@@ -153,22 +153,29 @@ const HabitList = ({ habits, currentDate, colorList }) => {
                         Time set at {item.habit.notificationTime}
                     </Text>
                 </View>
-                {!dateMatch ? (
-                    <View style={styles.right}>
-                        <TouchableOpacity style={styles.button} onPress={() => { checkNotDone(item) }}>
-                            <Ionicons name={'close-outline'} size={20} color="white" />
-                        </TouchableOpacity>
+                {isAfterCurrentDate ?
+                    (
+                        <View style={styles.right}>
+                            <Text style={styles.habitSubtitleText}>You cannot edit a day in the future.</Text>
+                        </View>
+                    )
+                    : (
+                        !dateMatch ? (
+                            <View style={styles.right}>
+                                <TouchableOpacity style={styles.button} onPress={() => { checkNotDone(item) }}>
+                                    <Ionicons name={'close-outline'} size={20} color="white" />
+                                </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.button} onPress={() => { checkDone(item) }}>
-                            <Ionicons name={'checkmark-outline'} size={20} color="white" />
-                        </TouchableOpacity>
-                    </View>) : (
-                    <View style={styles.right}>
-                        <TouchableOpacity style={styles.button} onPress={() => { removeCompletedEntry(item) }}>
-                            <Text style={styles.completedText}>{isDone ? "Done" : "Not Done"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )
+                                <TouchableOpacity style={styles.button} onPress={() => { checkDone(item) }}>
+                                    <Ionicons name={'checkmark-outline'} size={20} color="white" />
+                                </TouchableOpacity>
+                            </View>) : (
+                            <View style={styles.right}>
+                                <TouchableOpacity style={styles.button} onPress={() => { removeCompletedEntry(item) }}>
+                                    <Text style={styles.completedText}>{isDone ? "Done" : "Not Done"}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ))
                 }
             </View>
         )

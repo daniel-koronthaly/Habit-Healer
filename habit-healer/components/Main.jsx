@@ -28,6 +28,7 @@ const Main = ({ setCurrentScreen }) => {
 
     const swiper = useRef();
     const [value, setValue] = useState(new Date());
+    const [isAfterCurrentDate, setIsAfterCurrentDate] = useState(false);
     const currentDate = value.toLocaleDateString('en-US', { timeZone: userTimezone })
     const [week, setWeek] = useState(0);
 
@@ -58,6 +59,29 @@ const Main = ({ setCurrentScreen }) => {
             });
         });
     }, [week, userTimezone]);
+
+    useEffect(() => {
+        const checkDate = () => {
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth();
+            const currentDay = currentDate.getDate();
+
+            const valueYear = value.getFullYear();
+            const valueMonth = value.getMonth();
+            const valueDay = value.getDate();
+
+
+            if (currentYear === valueYear && currentMonth === valueMonth && currentDay === valueDay) {
+                setIsAfterCurrentDate(false); // Dates represent the same day, so they are considered equal
+            } else {
+                // Check if value is after the current date
+                setIsAfterCurrentDate(value > currentDate);
+            }
+        };
+
+        checkDate();
+    }, [value]);
 
     // every time a different day is selected, see which habits match that day of the week
     useEffect(() => {
@@ -157,20 +181,21 @@ const Main = ({ setCurrentScreen }) => {
                     Good {timeOfDay} {emoji}
                 </Text>
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity style={styles.rowItem} onPress={logMentalHealth}>
-                        <Text style={styles.logButton}>
+                    <TouchableOpacity style={styles.rowItem} disabled={isAfterCurrentDate} onPress={logMentalHealth}>
+                        <Text style={[styles.logButton, !isAfterCurrentDate ? { color: colors.headerColor } : { color: 'gray' }]}>
                             Mental Health
                         </Text>
                     </TouchableOpacity>
                     <View style={styles.rowItemRight}>
-                        {!mentalHealthDone ?
-                            (<View style={styles.icon}>
-                                <Ionicons name={'alert-outline'} size={15} color={"black"} />
-                            </View>) :
-                            (<View style={styles.iconDone}>
-                                <Ionicons name={'checkmark-outline'} size={15} color={"white"} />
-                            </View>)
-                        }
+                        {!isAfterCurrentDate && !loadingHabits &&
+                            (!mentalHealthDone ?
+                                (<View style={styles.icon}>
+                                    <Ionicons name={'alert-outline'} size={15} color={"black"} />
+                                </View>) :
+                                (<View style={styles.iconDone}>
+                                    <Ionicons name={'checkmark-outline'} size={15} color={"white"} />
+                                </View>)
+                            )}
                     </View>
                 </View>
                 <MentalHealthLogModal visible={modalVisible} onClose={closeModal} onSendData={onSendData} currentDate={currentDate} />
@@ -197,7 +222,7 @@ const Main = ({ setCurrentScreen }) => {
                     }}
                 >
                     {weeks.map((dates, index) => (
-                        <View style={[styles.itemRow]} key={index}>
+                        <View style={styles.itemRow} key={index}>
                             {dates.map((item, dateIndex) => {
                                 const isActive =
                                     value.toDateString() === item.date.toDateString();
@@ -242,7 +267,7 @@ const Main = ({ setCurrentScreen }) => {
                             </View>
                         ) : (
                             <View style={styles.loadingContainerHorizontal}>
-                                <HabitList habits={filteredHabits} currentDate={currentDate} colorList={usedColors}></HabitList>
+                                <HabitList habits={filteredHabits} currentDate={currentDate} isAfterCurrentDate={isAfterCurrentDate} colorList={usedColors}></HabitList>
                             </View>
                         )
                     )}
@@ -351,7 +376,6 @@ const styles = StyleSheet.create({
         color: colors.darkTextColor
     },
     logButton: {
-        color: colors.headerColor,
         fontSize: 15,
         fontWeight: '600',
         marginLeft: 10,
