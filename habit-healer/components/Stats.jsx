@@ -21,45 +21,8 @@ const auth = getAuth();
 
 const Stats = ({ selectedHabit, setCurrentScreen }) => {
     const [loadingCategories, setLoadingCategories] = useState(true);
-    const [categories, setCategories] = useState([]);
-    const [category, setCategory] = useState(selectedHabit.category);
-
-
-    // used to hide dropdown menu results when the dropdown is not selected
-    const [isFocused, setIsFocused] = useState(false)
 
     const [habitName, setHabitName] = useState(selectedHabit.habitName)
-
-    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-
-    const [selectedTime, setSelectedTime] = useState(() => {
-        const timeString = selectedHabit.habit.notificationTime;
-        const [time, period] = timeString.split(' ');
-        const [hours, minutes] = time.split(':').map(Number);
-
-        let adjustedHours = hours;
-        if (period === 'PM' && hours < 12) {
-            adjustedHours += 12;
-        } else if (period === 'AM' && hours === 12) {
-            adjustedHours = 0;
-        }
-        const currentDate = new Date();
-        const selectedTime = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            currentDate.getDate(),
-            adjustedHours,
-            minutes
-        );
-
-        return selectedTime;
-    });
-
-    const [shareWithFriends, setShareWithFriends] = useState(selectedHabit.habit.sharesWithFriends)
-    const toggleSwitch = () => setShareWithFriends(previousState => !previousState);
-    const [weekdays, setWeekdays] = React.useState(selectedHabit.habit.weekdays)
-
-    const [usedColors, setUsedColors] = useState({});
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -121,34 +84,6 @@ const Stats = ({ selectedHabit, setCurrentScreen }) => {
         });
     }, [selectedHabit, auth.currentUser.uid]);
       
-    // returns all categories that match what you have typed: "eati" will match "eating"
-    const findCategory = (query) => {
-        if (query === '') {
-            return categories;
-        }
-
-        const regex = new RegExp(`${query.trim()}`, 'i');
-        return categories.filter(category => regex.test(category));
-    };
-
-    const handleSelectCategory = (category) => {
-        setCategory(category);
-        setIsFocused(false);
-        Keyboard.dismiss()
-    };
-
-    const showTimePicker = () => {
-        setTimePickerVisibility(true);
-    };
-
-    const hideTimePicker = () => {
-        setTimePickerVisibility(false);
-    };
-
-    const handleTimeConfirm = (time) => {
-        setSelectedTime(time);
-        hideTimePicker();
-    };
 
     function cancel() {
         setCurrentScreen('HabitOverview')
@@ -257,7 +192,7 @@ const PastWeeksGraph = () => {
                                     <Text style={styles.subHeaderText}>Today</Text>
                                         <View style={styles.rowContainerSmall}>
                                             <Dot isRunning={false} />
-                                            <Text style={styles.statusText}> Still Running </Text>
+                                            <Text style={styles.statusText}> Not Done </Text>
                                             <Dot isRunning={true} />
                                             <Text style={styles.statusText}> Done </Text>
                                         </View>
@@ -279,26 +214,26 @@ const PastWeeksGraph = () => {
                                     <Text style={styles.subHeaderText}>This Week</Text>
                                         <View style={styles.rowContainerSmall}>
                                             <Dot isRunning={false} />
-                                            <Text style={styles.statusText}> Uncomplete </Text>
+                                            <Text style={styles.statusText}> Incomplete </Text>
                                             <Dot isRunning={true} />
-                                            <Text style={styles.statusText}> Completed </Text>
+                                            <Text style={styles.statusText}> Complete </Text>
                                         </View>
                                 </View>
 
                                 <WeekBarGraph/>    
 
 
-                                <View style={styles.rowContainer}>
+                                {/* <View style={styles.rowContainer}>
                                     <Text style={styles.subHeaderText}>Past Weeks</Text>
                                         <View style={styles.rowContainerSmall}>
-                                            <Dot isRunning={true} />
-                                            <Text style={styles.statusText}> Uncomplete </Text>
                                             <Dot isRunning={false} />
-                                            <Text style={styles.statusText}> Completed </Text>
+                                            <Text style={styles.statusText}> Incomplete </Text>
+                                            <Dot isRunning={true} />
+                                            <Text style={styles.statusText}> Complete </Text>
                                         </View>
                                 </View>
 
-                                <PastWeeksGraph/>    
+                                <PastWeeksGraph/>     */}
 
                                 
                             </View>
