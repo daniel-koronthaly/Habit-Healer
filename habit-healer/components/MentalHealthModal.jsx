@@ -38,6 +38,7 @@ const MentalHealthLogModal = ({ visible, onClose, onSendData, currentDate }) => 
           <Text style={styles.title}>Log Your Mental Health</Text>
           <Text style={styles.subtitle}>How are you feeling right now?</Text>
           <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>Low</Text>
             {[1, 2, 3, 4, 5].map((value, index) => (
               <TouchableOpacity
                 key={value}
@@ -51,6 +52,7 @@ const MentalHealthLogModal = ({ visible, onClose, onSendData, currentDate }) => 
                 <Text style={styles.ratingButtonText}>{value}</Text>
               </TouchableOpacity>
             ))}
+            <Text style={styles.rating}>High</Text>
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 20,
   },
   ratingButton: {
@@ -138,6 +141,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
   },
+  rating: {
+    fontSize: 10,
+    marginHorizontal: 8,
+    textAlign: 'center',
+    color: '#BBB',
+  }
 });
 
 export default MentalHealthLogModal;

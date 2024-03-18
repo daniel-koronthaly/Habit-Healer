@@ -34,9 +34,15 @@ const HabitList = ({ habits, currentDate, isAfterCurrentDate, colorList }) => {
         const hasDatesCompletedA = "datesCompleted" in a.habit
         const hasDatesCompletedB = "datesCompleted" in b.habit
 
-        if (hasDatesCompletedA !== hasDatesCompletedB) {
-            return hasDatesCompletedA - hasDatesCompletedB
+        const hasCurrentDateA = hasDatesCompletedA && Object.values(a.habit.datesCompleted).some(entry => entry.date === currentDate);
+        const hasCurrentDateB = hasDatesCompletedB && Object.values(b.habit.datesCompleted).some(entry => entry.date === currentDate);
+        console.log(currentDate)
+        console.log(hasCurrentDateA)
+        console.log(hasCurrentDateB)
+        if (hasCurrentDateA !== hasCurrentDateB) {
+            return hasCurrentDateA - hasCurrentDateB
         }
+
 
         const parseTime = (timeString) => {
             const [time, period] = timeString.split(' ');
