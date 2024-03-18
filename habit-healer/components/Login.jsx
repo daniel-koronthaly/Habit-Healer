@@ -36,7 +36,21 @@ const registerAccount = (email, password, setCurrentScreen) => {
         })
         .catch(error => {
             const errorCode = error.code;
-            const errorMessage = error.message;
+            let errorMessage = error.message;
+            switch(errorCode) {
+                case "auth/email-already-in-use":
+                    errorMessage = "This email is already in use."
+                    break;
+                case "auth/invalid-email":
+                    errorMessage = "This email is invalid."
+                    break;
+                case "auth/operation-not-allowed":
+                    errorMessage = "Email/password authentication is not enabled. Contact app creators."
+                    break;
+                case "auth/weak-password":
+                    errorMessage = "The password provided is too weak."
+                    break;
+            }
             Alert.alert('Error Registering', errorMessage, [
                 {
                     text: 'OK',
@@ -57,7 +71,21 @@ const loginWithAccount = (email, password, setCurrentScreen) => {
         })
         .catch(error => {
             const errorCode = error.code;
-            const errorMessage = error.message;
+            let errorMessage = error.message;
+            switch(errorCode) {
+                case "auth/wrong-password":
+                    errorMessage = "This email is already in use."
+                    break;
+                case "auth/invalid-email":
+                    errorMessage = "This email is invalid."
+                    break;
+                case "auth/user-disabled":
+                    errorMessage = "The email has been disabled."
+                    break;
+                case "auth/user-not-found":
+                    errorMessage = "There is no account associated with this email."
+                    break;
+            }
             Alert.alert('Error Logging In', errorMessage, [
                 {
                     text: 'OK',
