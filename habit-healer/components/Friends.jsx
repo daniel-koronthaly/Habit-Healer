@@ -9,10 +9,9 @@ const auth = getAuth();
 
 // Accept setCurrentScreen as a prop here
 const Friends = ({ setCurrentScreen }) => {
-    const theme = useColorScheme(); // Detects the current theme (light or dark)
 
     // Selects background color based on the theme
-    const backgroundColor = theme === 'light' ? colors.lightBackgroundColor : colors.darkBackgroundColor;
+    const backgroundColor = colors.darkBackgroundColor;
 
     const dynamicStyles = StyleSheet.create({
         container: {
@@ -28,8 +27,9 @@ const Friends = ({ setCurrentScreen }) => {
         },
         // Define topRightButtonText style to be used below
         topRightButtonText: {
-            color: colors.headerColor, // Example color, adjust as necessary
-            // Add other styling for your topRightButtonText here
+            color: colors.headerColor, 
+            fontWeight: '700',
+            fontSize: 18,
         },
         // Any other dynamic styles based on the theme can be defined here
     });

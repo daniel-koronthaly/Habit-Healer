@@ -72,6 +72,9 @@ const HabitList = ({ habits, currentDate, isAfterCurrentDate, colorList }) => {
         if (!item.habit.datesCompleted) {
             item.habit.datesCompleted = [dateEntry]
             set(ref(dbRef, "habits/" + auth.currentUser.uid + "/" + item.category + "/habitList/" + item.habitName + "/datesCompleted"), item.habit.datesCompleted)
+            // update activities list
+            // put key: habitName, value: {dateCompleted, timeCompleted, type: "finished"}
+            set(ref(dbRef, "activities/" + auth.currentUser.uid + "/" + item.habitName + "/"), { "dateCompleted": currentDate, "timeCompleted": item.habit.notificationTime, "type": "finished" })
         }
         else {
             const existingDateEntry = item.habit.datesCompleted.find(entry => entry.date === dateEntry.date);

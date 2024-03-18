@@ -25,7 +25,9 @@ const ViewFriends = ({ setCurrentScreen }) => {
             paddingRight: 10, // Adjust padding as necessary
         },
         topRightButtonText: {
-            color: colors.headerColor,
+            color: colors.headerColor, 
+            fontWeight: '700',
+            fontSize: 18,
         },
     });
 

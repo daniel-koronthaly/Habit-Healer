@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'; // Using Ionicons for icons
 
 const NotificationItem = ({ notification }) => {
     const { friendName, habitName, type } = notification;
-    const isCompleted = type === 'completed';
+    const isCompleted = type === 'finished';
 
     return (
         <View style={styles.notificationItem}>
