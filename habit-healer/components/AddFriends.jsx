@@ -12,15 +12,12 @@ import {
     Dimensions,
     useColorScheme
 } from 'react-native';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors, habitColors } from '../colors/colors';
 import Autocomplete from 'react-native-autocomplete-input';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DaySelector from './DaySelector';
 import SubpageHeader from './SubpageHeader';
-
-const auth = getAuth();
-
 
 const AddFriends = ({ setCurrentScreen }) => {
     const [loadingUsernames, setLoadingUsernames] = useState(true);

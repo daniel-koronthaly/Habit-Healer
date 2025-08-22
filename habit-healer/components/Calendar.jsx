@@ -12,7 +12,7 @@ import {
 import SubpageHeader from './SubpageHeader';
 import MainpageHeader from './MainpageHeader';
 import { Ionicons } from '@expo/vector-icons';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 import { Calendar as ICalendar, CalendarList as ICalendarList, Agenda as IAgenda } from 'react-native-calendars';
 import { Skia, Rect, Path, Paint, Canvas, Circle, Group } from '@shopify/react-native-skia';
@@ -28,7 +28,6 @@ const Calendar = () => {
     const [usedColors, setUsedColors] = useState({});
 
     const theme = useColorScheme();
-    const auth = getAuth();
 
     const dayViewWidth = 50;
     const dayViewHeight = 50;

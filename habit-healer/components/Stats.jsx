@@ -10,14 +10,12 @@ import {
     Dimensions,
     useColorScheme
 } from 'react-native';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors, habitColors } from '../colors/colors';
 import SubpageHeader from './SubpageHeader';
 import DeleteModal  from './DeleteModal';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { startOfWeek, addDays, isSameWeek, parseISO, format, subWeeks   } from 'date-fns';
-
-const auth = getAuth();
 
 const Stats = ({ selectedHabit, setCurrentScreen }) => {
     const [loadingCategories, setLoadingCategories] = useState(true);

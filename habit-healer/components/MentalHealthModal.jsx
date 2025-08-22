@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '../colors/colors';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
-
-const auth = getAuth();
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 
 const MentalHealthLogModal = ({ visible, onClose, onSendData, currentDate }) => {
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

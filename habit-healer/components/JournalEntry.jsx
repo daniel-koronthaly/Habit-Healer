@@ -5,7 +5,7 @@ import { colors } from "../colors/colors";
 import moment from "moment";
 import "moment-timezone";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { getAuth } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 
 const JournalEntry = ({ selectedDate }) => {
   const [journalText, setJournalText] = useState("");
@@ -13,7 +13,7 @@ const JournalEntry = ({ selectedDate }) => {
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const formattedSelectedDate = moment(selectedDate).tz(userTimezone).format("YYYY-MM-DD");
   const theme = useColorScheme();
-  const uid = getAuth().currentUser.uid;
+  const uid = auth.currentUser.uid;
 
   const handleChange = (text) => {
     setJournalText(text);

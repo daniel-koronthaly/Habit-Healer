@@ -15,15 +15,13 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 import {
-    getAuth,
+    auth,
     sendPasswordResetEmail,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
 } from '../firebase/firebaseConfig';
 
 import { colors } from '../colors/colors';
-
-const auth = getAuth();
 
 const registerAccount = (email, password, setCurrentScreen) => {
     createUserWithEmailAndPassword(auth, email, password)

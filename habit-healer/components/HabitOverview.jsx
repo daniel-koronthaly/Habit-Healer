@@ -8,7 +8,7 @@ import {
     ActivityIndicator,
     useColorScheme
 } from 'react-native'
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 import MainpageHeader from './MainpageHeader'
 import HabitOverviewList from './HabitOverviewList'
 import { colors } from '../colors/colors';
@@ -21,8 +21,6 @@ const HabitOverview = ({ setCurrentScreen, setSelectedHabit }) => {
     const [usedColors, setUsedColors] = useState({});
 
     const theme = useColorScheme();
-
-    const auth = getAuth();
 
     useEffect(() => {
         const fetchData = async () => {

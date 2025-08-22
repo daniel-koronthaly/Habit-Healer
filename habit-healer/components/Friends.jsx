@@ -1,11 +1,8 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { getAuth } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 import NotificationsFeed from './NotificationsFeed';
 import MainpageHeader from './MainpageHeader';
-
-const auth = getAuth();
 
 // Accept setCurrentScreen as a prop here
 const Friends = ({ setCurrentScreen }) => {

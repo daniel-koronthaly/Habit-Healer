@@ -14,7 +14,7 @@ import {
 import Swiper from 'react-native-swiper';
 import moment from 'moment';
 import 'moment-timezone';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
 import HabitList from './HabitList';
 import HabitFilter from './HabitFilter';
@@ -36,8 +36,6 @@ const Main = ({ setCurrentScreen }) => {
     const [habits, setHabits] = useState([])
 
     const [selectedCategory, setSelectedCategory] = useState('All')
-
-    const auth = getAuth();
 
     const theme = useColorScheme();
 

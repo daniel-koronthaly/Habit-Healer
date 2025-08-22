@@ -1,17 +1,12 @@
-import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, useColorScheme, Dimensions } from 'react-native';
-import { getAuth } from '../firebase/firebaseConfig';
 import { colors } from '../colors/colors';
-import NotificationsFeed from './NotificationsFeed';
 import SubpageHeader from './SubpageHeader';
 import FriendList from './FriendsList';
-
-const auth = getAuth();
 
 const ViewFriends = ({ setCurrentScreen }) => {
     const theme = useColorScheme();
 
-    const backgroundColor = theme === 'light' ? colors.lightBackgroundColor : colors.darkBackgroundColor;
+    const backgroundColor = theme === 'light' ? colors.appBackgroundColor : colors.darkBackgroundColor;
 
     const dynamicStyles = StyleSheet.create({
         container: {

@@ -13,15 +13,13 @@ import {
     Dimensions,
     useColorScheme
 } from 'react-native';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { colors, habitColors } from '../colors/colors';
 import Autocomplete from 'react-native-autocomplete-input';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DaySelector from './DaySelector';
 import SubpageHeader from './SubpageHeader';
 import DeleteModal from './DeleteModal'
-
-const auth = getAuth();
 
 const EditHabit = ({ selectedHabit, setCurrentScreen }) => {
     const [loadingCategories, setLoadingCategories] = useState(true);

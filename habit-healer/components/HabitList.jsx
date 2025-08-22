@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
-
-const auth = getAuth();
 
 const HabitList = ({ habits, currentDate, isAfterCurrentDate, colorList }) => {
 

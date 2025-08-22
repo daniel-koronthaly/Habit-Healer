@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, SectionList, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
-
-const auth = getAuth();
-
 
 const SubList = ({ habits, setCurrentScreen, setSelectedHabit, colorList }) => {
     const renderItem = ({ item, index }) => {

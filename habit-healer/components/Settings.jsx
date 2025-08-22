@@ -8,15 +8,13 @@ import {
     useColorScheme,
 } from 'react-native';
 import MainpageHeader from './MainpageHeader';
-import { signOut, getAuth, getDatabase, deleteUser, remove, ref, child } from "../firebase/firebaseConfig";
+import { signOut, auth, getDatabase, deleteUser, remove, ref, child } from "../firebase/firebaseConfig";
 import { colors } from '../colors/colors'
-
-const auth = getAuth();
 
 export default function Settings({ setCurrentScreen }) {
     const theme = useColorScheme();
     const uid = auth.currentUser.uid;
-    const email = getAuth().currentUser.email;
+    const email = auth.currentUser.email;
 
     const deleteAccount = () => {
         Alert.alert(
@@ -59,7 +57,6 @@ export default function Settings({ setCurrentScreen }) {
                 {
                     text: "Sign out",
                     onPress: () => {
-                        const auth = getAuth();
                         signOut(auth).then(() => {
                             console.log("User logged out")
                         }).catch((error) => {

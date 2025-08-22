@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import FriendListItem from './FriendListItem'; // Make sure this path is correct
-import { getDatabase, getAuth, ref, get } from '../firebase/firebaseConfig';
+import { getDatabase, auth, ref, get } from '../firebase/firebaseConfig';
 
 const FriendList = () => {
   const [friends, setFriends] = useState([]);
   const [userNames, setUserNames] = useState({});
   const database = getDatabase();
-  const auth = getAuth();
   const currentUser = auth.currentUser;
 
   useEffect(() => {

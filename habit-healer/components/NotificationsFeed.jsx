@@ -2,14 +2,13 @@ import React from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import NotificationItem from './NotificationItem'; // Adjust the path as necessary
 import { useState, useEffect } from 'react';
-import { getDatabase, getAuth, child, set, get, ref } from '../firebase/firebaseConfig';
+import { getDatabase, auth, get, ref } from '../firebase/firebaseConfig';
 import { onValue } from "firebase/database";
 
 const NotificationsFeed = () => {
   const [notifications, setNotifications] = useState([]);
   const [userNames, setUserNames] = useState({});
   const database = getDatabase();
-  const auth = getAuth();
   const currentUser = auth.currentUser;
 
   useEffect(() => {
