@@ -141,6 +141,7 @@ const Login = ({ setCurrentScreen }) => {
                     <View style={styles.inputView}>
                         <TextInput
                             style={styles.textInput}
+                            autoCapitalize="none"
                             onChangeText={email => setEmail(email)} />
                     </View>
 

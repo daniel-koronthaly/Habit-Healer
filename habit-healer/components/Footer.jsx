@@ -27,7 +27,7 @@ const Footer = ({ setCurrentScreen, currentScreen }) => {
   }
   return (<View style={styles.container}>
     <CustomIconButton
-      iconName="ios-home"
+      iconName="home-outline"
       onPress={() => setCurrentScreen('Main')}
       color={getCurrentScreenColor(['Main'])}
     />
