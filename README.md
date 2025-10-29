@@ -12,6 +12,13 @@
 ## Description
 
 Mobile application intended to investigate how to improve your mental health based off of forming and maintaining habits.
+
+## Example Screenshots
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/a81870e5-4f6f-45f8-a01e-df9fcd2607b4" />
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/a2b21780-ac0c-4c34-8da7-d6eabd1d3d81" />
+
 ## Installation
 
 **Clone the repository on your local machine:**
@@ -69,3 +76,4 @@ This will load your React Native app on your mobile device.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](notion://www.notion.so/LICENSE) file for details.
+
